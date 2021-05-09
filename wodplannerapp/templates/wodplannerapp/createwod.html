@@ -1,0 +1,14 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'wodplannerapp/style.css' %}">
+
+<h1>Create new WODs</h1>
+
+<table>
+    {% for schema in schema_list %}
+        <tr>
+            <td>{{ schema.schema_name }}</td>
+            <td>{{ schema.schema_description }}</td>
+        </tr>
+    {% endfor %}
+</table>

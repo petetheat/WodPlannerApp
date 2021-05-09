@@ -1,0 +1,42 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'wodplannerapp/style.css' %}">
+
+<h1>{{ wod.strength_type }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<b>Date:</b> {{ wod.pub_date|date:'M. d, Y' }}
+
+<h2>Strength/Skill:</h2>
+<table>
+{% for choice in wod.strengthmovement_set.all %}
+    <tr>
+        <td>{{ choice.strength_sets_reps }}</td>
+        <td>{{ choice.strength_movement }}</td>
+    </tr>
+{% endfor %}
+</table>
+{% if wod.strength_comment != "-" %}{{ wod.strength_comment }}{% endif %}
+
+<h2>WOD:</h2>
+{{ wod.wod_time_rounds }} {{ wod.wod_schema }}
+<table>
+{% for choice in wod.wodmovement_set.all %}
+    <tr>
+        <td>{{ choice.wod_reps }}</td>
+        <td>{{ choice.wod_movement }}</td>
+        <td>{% ifnotequal choice.wod_weight "-" %}{{ choice.wod_weight }}{% endifnotequal %}</td>
+    </tr>
+{% endfor %}
+</table>
+{% if wod.wod_comment != "-" %} }}{{ wod.wod_comment }}{% endif %}
+
+<a href="{% url 'wodplannerapp:index' %}">Return</a>
+
+
+<div class="box">Blablablub</div>
+<div class="box">Blublubla</div>
+<div class="box">Blablubla</div>
+
+
