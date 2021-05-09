@@ -2,20 +2,23 @@
 
 <link rel="stylesheet" type="text/css" href="{% static 'wodplannerapp/style.css' %}">
 
-<img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="My image">
+<img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154">
 
-<h1>Carabao WOD Planner</h1>
+<h1>WOD Planner</h1>
 
-{% if latest_question_list %}
-    <ul>
-    {% for question in latest_question_list %}
-        <li><a href="{% url 'wodplannerapp:detail' question.id %}">{{ question.question_text }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No polls are available.</p>
-{% endif %}
+<table>
+    <tr>
+        <td><img src="{% static 'wodplannerapp/images/icons8-kalender-96.png' %}" alt="Create new WOD" width="64" height="64"></td>
+        <td>WODs anzeigen</td>
+    </tr>
+    <tr>
+        <td><a href="{% url 'wodplannerapp:create' %}"><img src="{% static 'wodplannerapp/images/icons8-gewichtheben-64.png' %}" alt="Create new WOD" width="64" height="64"></a></td>
+        <td>Neue WODs erstellen</td>
+    </tr>
+    <tr>
+        <td><img src="{% static 'wodplannerapp/images/icons8-einstellungen-100.png' %}" alt="Settings" width="64" height="64"></td>
+        <td>Einstellungen</td>
+    </tr>
+</table>
 
-<div class="mobile">
-  <p>Dieser Inhalt ist nur für mobile Endgeräte sichtbar.</p>
-</div>
+

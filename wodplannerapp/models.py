@@ -50,7 +50,7 @@ class Wod(models.Model):
     wod_comment = models.CharField(max_length=200)
 
     def __str__(self):
-        return self.wod_schema
+        return 'WOD%d' % self.id
 
 
 class StrengthMovement(models.Model):

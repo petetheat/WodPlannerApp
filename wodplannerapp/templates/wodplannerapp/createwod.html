@@ -2,7 +2,11 @@
 
 <link rel="stylesheet" type="text/css" href="{% static 'wodplannerapp/style.css' %}">
 
-<h1>Create new WODs</h1>
+<img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154">
+
+<h1>Neue WODs erstellen</h1>
+
+Wähle den Workout Typ aus:
 
 <table>
     {% for schema in schema_list %}
@@ -12,3 +16,5 @@
         </tr>
     {% endfor %}
 </table>
+
+<a href="{% url 'wodplannerapp:index' %}">Zurück</a>
