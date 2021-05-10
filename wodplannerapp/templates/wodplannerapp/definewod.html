@@ -1,0 +1,23 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'wodplannerapp/style.css' %}">
+
+<img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154">
+
+<h1>Strength/Skill:</h1>
+
+Wähle die Übung aus:
+<form action="" method="post">
+{% csrf_token %}
+<table>
+    {% for f in form_strength %}
+    <tr>
+        <td>{{ f.label }}</td>
+        <td>{{ f }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<h1>{{ wod_type }}</h1>
+
+<input type="submit" value="Erstellen">
+</form>

@@ -36,6 +36,7 @@ class Movement(models.Model):
 class Schemas(models.Model):
     schema_name = models.CharField(max_length=200)
     schema_description = models.CharField(max_length=200)
+    schema_key = models.CharField(max_length=200)
 
     def __str__(self):
         return self.schema_name

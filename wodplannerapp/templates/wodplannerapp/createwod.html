@@ -11,7 +11,7 @@ Wähle den Workout Typ aus:
 <table>
     {% for schema in schema_list %}
         <tr>
-            <td>{{ schema.schema_name }}</td>
+            <td><a href="{% url 'wodplannerapp:definewod' schema.schema_key  %}">{{ schema.schema_name }}</a></td>
             <td>{{ schema.schema_description }}</td>
         </tr>
     {% endfor %}
