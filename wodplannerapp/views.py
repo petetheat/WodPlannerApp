@@ -35,6 +35,14 @@ class CreateWodView(generic.ListView):
         return Schemas.objects.order_by('schema_name')
 
 
+class WodOverview(generic.ListView):
+    template_name = 'wodplannerapp/wodoverview.html'
+    context_object_name = 'wod_list'
+
+    def get_queryset(self):
+        return Wod.objects.order_by('pub_date')
+
+
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:

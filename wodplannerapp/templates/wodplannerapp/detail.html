@@ -1,43 +1,52 @@
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 {% load static %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'wodplannerapp/style.css' %}">
 
-<img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154">
 
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<h1><b>Datum:</b> {{ wod.pub_date|date:'M d, Y' }}</h1>
+<div id="app-content">
+    <div class="simple-container">
+        <img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154">
 
-<h2>Strength/Skill:</h2>
-<table>
-{% for choice in wod.strengthmovement_set.all %}
-    <tr>
-        <td>{{ choice.strength_sets_reps }}</td>
-        <td>{{ choice.strength_movement }}</td>
-    </tr>
-{% endfor %}
-</table>
-{% if wod.strength_comment != "-" %}{{ wod.strength_comment }}{% endif %}
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        <h1><b>Datum:</b> {{ wod.pub_date|date:'M d, Y' }}</h1>
 
-<h2>WOD:</h2>
-{% if wod.wod_schema == "RFT Varying Reps" or wod.wod_schema == "Chipper" or wod.wod_schema == "FGB" or wod.wod_schema == "Death-by"%}
-{{ wod.wod_schema }}
-{% else %}
-{{ wod.wod_time_rounds }} {{ wod.wod_schema }}
-{% endif %}
-<table>
-{% for choice in wod.wodmovement_set.all %}
-    <tr>
-        <td>{{ choice.wod_reps }}</td>
-        <td>{{ choice.wod_movement }}</td>
-        <td>{% ifnotequal choice.wod_weight "-" %}{{ choice.wod_weight }}{% endifnotequal %}</td>
-    </tr>
-{% endfor %}
-</table>
+        <h2>Strength/Skill:</h2>
+        <div>
+            <table>
+            {% for choice in wod.strengthmovement_set.all %}
+                <tr>
+                    <td>{{ choice.strength_sets_reps }}</td>
+                    <td>{{ choice.strength_movement }}</td>
+                </tr>
+            {% endfor %}
+            </table>
+            {% if wod.strength_comment != "-" %}{{ wod.strength_comment }}{% endif %}
 
-{% if wod.wod_comment != "-" %}{{ wod.wod_comment }}{% endif %}
+            <h2>WOD:</h2>
+            {% if wod.wod_schema == "RFT Varying Reps" or wod.wod_schema == "Chipper" or wod.wod_schema == "FGB" or wod.wod_schema == "Death-by"%}
+            {{ wod.wod_schema }}
+            {% else %}
+            {{ wod.wod_time_rounds }} {{ wod.wod_schema }}
+            {% endif %}
+            <table>
+            {% for choice in wod.wodmovement_set.all %}
+                <tr>
+                    <td>{{ choice.wod_reps }}</td>
+                    <td>{{ choice.wod_movement }}</td>
+                    <td>{% ifnotequal choice.wod_weight "-" %}{{ choice.wod_weight }}{% endifnotequal %}</td>
+                </tr>
+            {% endfor %}
+            </table>
 
-<a href="{% url 'wodplannerapp:index' %}">Zurück</a>
+            {% if wod.wod_comment != "-" %}{{ wod.wod_comment }}{% endif %}
+        </div>
+        <div>
+            <a href="{% url 'wodplannerapp:index' %}" class="button">Zurück</a>
+        </div>
+    </div>
+</div>
 
 
 

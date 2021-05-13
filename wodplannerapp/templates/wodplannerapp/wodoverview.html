@@ -1,0 +1,22 @@
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'wodplannerapp/style.css' %}">
+
+<div id="app-content">
+    <div class="simple-container">
+        <img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154">
+
+        <h1>WOD Liste</h1>
+
+        <table>
+            {% for wod in wod_list %}
+                <tr>
+                    <td><a href="{% url 'wodplannerapp:detail' wod.id  %}" class="button">{{ wod.pub_date }}</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <a href="{% url 'wodplannerapp:index' %}" class="button">Zurück</a>
+    </div>
+</div>
