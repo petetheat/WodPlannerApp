@@ -1,20 +1,25 @@
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 {% load static %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'wodplannerapp/style.css' %}">
 
-<img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154">
+<div id="app-content">
+    <div class="simple-container">
+        <img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154">
 
-<h1>Neue WODs erstellen</h1>
+        <h1>Neue WODs erstellen</h1>
 
-Wähle den Workout Typ aus:
+        Wähle den Workout Typ aus:
 
-<table>
-    {% for schema in schema_list %}
-        <tr>
-            <td><a href="{% url 'wodplannerapp:definewod' schema.schema_key  %}">{{ schema.schema_name }}</a></td>
-            <td>{{ schema.schema_description }}</td>
-        </tr>
-    {% endfor %}
-</table>
+        <table>
+            {% for schema in schema_list %}
+                <tr>
+                    <td><a href="{% url 'wodplannerapp:definewod' schema.schema_key  %}" class="button">{{ schema.schema_name }}</a></td>
+                    <td>{{ schema.schema_description }}</td>
+                </tr>
+            {% endfor %}
+        </table>
 
-<a href="{% url 'wodplannerapp:index' %}">Zurück</a>
+        <a href="{% url 'wodplannerapp:index' %}" class="button">Zurück</a>
+    </div>
+</div>

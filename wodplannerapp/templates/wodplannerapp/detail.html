@@ -4,11 +4,9 @@
 
 <img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154">
 
-<h1>WOD{{ wod.id }}</h1>
-
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<b>Datum:</b> {{ wod.pub_date|date:'M. d, Y' }}
+<h1><b>Datum:</b> {{ wod.pub_date|date:'M d, Y' }}</h1>
 
 <h2>Strength/Skill:</h2>
 <table>

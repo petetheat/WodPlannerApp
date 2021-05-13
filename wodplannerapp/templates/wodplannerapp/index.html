@@ -1,24 +1,29 @@
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
 {% load static %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'wodplannerapp/style.css' %}">
+<div id="app-content">
+    <div class="simple-container">
+        <img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154">
 
-<img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154">
+        <h1>WOD Planner</h1>
 
-<h1>WOD Planner</h1>
-
-<table>
-    <tr>
-        <td><img src="{% static 'wodplannerapp/images/icons8-kalender-96.png' %}" alt="Create new WOD" width="64" height="64"></td>
-        <td>WODs anzeigen</td>
-    </tr>
-    <tr>
-        <td><a href="{% url 'wodplannerapp:create' %}"><img src="{% static 'wodplannerapp/images/icons8-gewichtheben-64.png' %}" alt="Create new WOD" width="64" height="64"></a></td>
-        <td>Neue WODs erstellen</td>
-    </tr>
-    <tr>
-        <td><img src="{% static 'wodplannerapp/images/icons8-einstellungen-100.png' %}" alt="Settings" width="64" height="64"></td>
-        <td>Einstellungen</td>
-    </tr>
-</table>
+        <table>
+            <tr>
+                <td><img src="{% static 'wodplannerapp/images/icons8-kalender-96.png' %}" alt="Create new WOD" width="64" height="64"></td>
+                <td>WODs anzeigen</td>
+            </tr>
+            <tr>
+                <td><a href="{% url 'wodplannerapp:create' %}"><img src="{% static 'wodplannerapp/images/icons8-gewichtheben-64.png' %}" alt="Create new WOD" width="64" height="64"></a></td>
+                <td>Neue WODs erstellen</td>
+            </tr>
+            <tr>
+                <td><img src="{% static 'wodplannerapp/images/icons8-einstellungen-100.png' %}" alt="Settings" width="64" height="64"></td>
+                <td>Einstellungen</td>
+            </tr>
+        </table>
+    </div>
+</div>
 
 

@@ -1,0 +1,15 @@
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'wodplannerapp/style.css' %}">
+
+<div id="app-content">
+    <div class="simple-container">
+        <img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154">
+        <h1>WOD erfolgreich erstellt</h1>
+
+        <a href="{% url 'wodplannerapp:index' %}" class="button">Startseite</a>
+        <a href="{% url 'wodplannerapp:create' %}" class="button">Neues WOD erstellen</a>
+    </div>
+</div>

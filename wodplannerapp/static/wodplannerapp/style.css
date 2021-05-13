@@ -6,7 +6,7 @@
 }
 
 body {
-	font-family: 'Open Sans', sans-serif;
+	font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
 	line-height: 1.75em;
 	font-size: 16px;
 	background-color: #222;
@@ -14,7 +14,7 @@ body {
 }
 
 .simple-container {
-	max-width: 675px;
+	max-width: 800px;
 	margin: 0 auto;
 	padding-top: 70px;
 	padding-bottom: 20px;
@@ -68,12 +68,12 @@ hr {
 	margin: 0px;
 }
 
-a[href] {
-	color: #1e8ad6;
-}
+/*a[href] {*/
+/*	color: #1e8ad6;*/
+/*}*/
 
 a[href]:hover {
-	color: #3ba0e6;
+	color: white;
 }
 
 img {
@@ -107,4 +107,30 @@ th, td {
      float: left;
      padding: 20px;
      background: #eee;
+}
+
+.button {
+  background-color: #344663; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  max-width: 150px;
+  min-width: 150px;
+}
+
+select {
+  margin: 20px;
+  width: 100px;
+  padding: 5px 35px 5px 5px;
+  font-size: 16px;
+  border: 1px solid #CCC;
+  /*height: 34px;*/
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: url(https://stackoverflow.com/favicon.ico) 96% / 15% no-repeat #EEE;
 }

@@ -5,7 +5,7 @@ from .models import *
 from django.http import Http404
 from django.urls import reverse
 from django.views import generic
-from .forms import WodForm, StrengthForm
+from .forms import WodFormTime, WodFormRounds, StrengthForm, MovementFormSet
 
 
 class IndexView(generic.ListView):
@@ -56,24 +56,51 @@ def vote(request, question_id):
 
 def define_wod(request, schema_key):
     schema = get_object_or_404(Schemas, schema_key=schema_key)
-    # if this is a POST request we need to process the form data
+
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        # form = WodForm(request.POST)
-        form = StrengthForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
+        if 'amrap' in schema_key or 'emom' in schema_key:
+            form = WodFormTime(request.POST)
+        else:
+            form = WodFormRounds(request.POST)
+        form_strength = StrengthForm(request.POST)
+        form_test = MovementFormSet(request.POST)
+
+        if form_strength.is_valid() and form.is_valid():
+            strength_type = form_strength.cleaned_data['strength_type']
+            strength_comment = form_strength.cleaned_data['strength_comment']
+            date = form_strength.cleaned_data['date']
+            wod_time_rounds = form.cleaned_data['wod_time_rounds']
+            wod_comment = form.cleaned_data['wod_comment']
+            wod = Wod(strength_type=strength_type, pub_date=date, strength_comment=strength_comment,
+                      wod_schema=schema.schema_name, wod_time_rounds=wod_time_rounds, wod_comment=wod_comment)
+            wod.save()
+
+            for f in form_test:
+                if f.is_valid():
+                    for k in f.cleaned_data.keys():
+                        sm = StrengthMovement(wod=wod, strength_movement=f.cleaned_data[k],
+                                              strength_sets_reps='5x5')
+                        sm.save()
+
             # redirect to a new URL:
-            return HttpResponseRedirect('/wodplannerapp/newwod/')
+            return HttpResponseRedirect('/wodplannerapp/success/')
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        # form = WodForm()
-        form = StrengthForm()
+        if 'amrap' in schema_key or 'emom' in schema_key:
+            form = WodFormTime()
+        else:
+            form = WodFormRounds()
+        form_strength = StrengthForm()
+        form_strength_movement = MovementFormSet()
 
     wod_type = schema.schema_name
     # wod_type = schema_key
-    print(form)
-    return render(request, 'wodplannerapp/definewod.html', {'form_strength': form, 'wod_type': wod_type})
+    return render(request, 'wodplannerapp/definewod.html', {'form_strength': form_strength,
+                                                            'form_wod': form, 'wod_type': wod_type,
+                                                            'schema_key': schema_key,
+                                                            'form_strength_movement': form_strength_movement})
+
+
+def success(request):
+    return render(request, 'wodplannerapp/success.html')
