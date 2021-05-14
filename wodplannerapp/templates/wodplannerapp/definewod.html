@@ -64,17 +64,18 @@
         <button id="add-form" type="button" class="button">Übung hinzufügen</button>
         <button id="remove-form" type="button" class="button">Übung entfernen</button>
 
-    <h1>{{ wod_type }}</h1>
-    <table>
-        {% for f in form_wod %}
-        <tr>
-            <td>{{ f.label }}</td>
-            <td>{{ f }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    <input type="submit" value="Erstellen" name="save" class="button">
+        <h1>{{ wod_type }}</h1>
 
+        <div>
+            <div class="descr">
+                {{ form_wod.wod_time_rounds.label }}:
+            </div>
+            <div class="mycontent">
+                {{ form_wod.wod_time_rounds }}
+            </div>
+        </div>
+
+        <input type="submit" value="Erstellen" name="save" class="button">
     </form>
 </div>
 </div>

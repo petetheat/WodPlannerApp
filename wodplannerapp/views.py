@@ -80,6 +80,7 @@ def define_wod(request, schema_key):
         form_strength = StrengthForm(request.POST)
         form_strength_movement = MovementFormSet(request.POST)
         form_reps = RepsFormSet(request.POST, prefix='reps')
+        form_wod_movement = MovementFormSet(request.POST, prefix='wodmove')
         if form_strength.is_valid() and form.is_valid():
             strength_type = form_strength.cleaned_data['strength_type']
             strength_comment = form_strength.cleaned_data['strength_comment']
@@ -125,11 +126,13 @@ def define_wod(request, schema_key):
         form_strength = StrengthForm()
         form_strength_movement = MovementFormSet()
         form_reps = RepsFormSet(prefix='reps')
+        form_wod_movement = MovementFormSet()
 
     wod_type = schema.schema_name
 
     return render(request, 'wodplannerapp/definewod.html', {'form_strength': form_strength,
                                                             'form_wod': form, 'wod_type': wod_type,
+                                                            'form_wod_movement': form_wod_movement,
                                                             'schema_key': schema_key,
                                                             'form_strength_movement': form_strength_movement,
                                                             'form_reps': form_reps})

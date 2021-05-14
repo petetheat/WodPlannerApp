@@ -38,7 +38,7 @@ class WodFormRounds(forms.Form):
 
 
 class StrengthForm(forms.Form):
-    date = forms.DateField(widget=forms.SelectDateWidget(years=YEARS), label='Datum')
+    date = forms.DateTimeField(widget=forms.SelectDateWidget(years=YEARS), label='Datum')
     strength_type = forms.CharField(label='Belastungsart', max_length=5, widget=forms.Select(choices=STRENGTH_CHOICES))
     strength_comment = forms.CharField(label='Kommentar', max_length=100, required=False)
     strength_sets = forms.IntegerField(label='Sets', initial=INITIAL_SET_NUMBER, min_value=1)
