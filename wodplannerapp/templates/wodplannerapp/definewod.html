@@ -8,7 +8,7 @@
 
 <div id="app-content">
 <div class="simple-container">
-    <img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154">
+    <a href="{% url 'wodplannerapp:index' %}"><img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154"></a>
 
     <form id="form-container" method="post" action="{% url 'wodplannerapp:definewod' schema_key %}">
     {% csrf_token %}
@@ -17,25 +17,52 @@
 
         <h1>Strength/Skill:</h1>
         Wähle die Übung aus:
+        <div>
+            <div class="descr">
+                Anzahl Sets:
+            </div>
+            <div class="mycontent">
+                {{ form_strength.strength_sets }}
+            </div>
+        </div>
+
+        {{ form_reps.management_form }}
+        {% for form in form_reps %}
+                <div class="reps-strength-form">
+                    {{ form.number_reps }}
+                </div>
+        {% endfor %}
+        <div class="rep-identify"></div>
+
         {{ form_strength_movement.management_form}}
         {% for form in form_strength_movement %}
         <div class="movement-strength-form">
-            {{ form.as_p }}
+            <div class="descr">
+                Übung:
+            </div>
+            <div class="mycontent">
+                {{ form.movement_name }}
+            </div>
         </div>
         {% endfor %}
+        <div class="strength-type">
+            <div class="descr">
+                Belastungsart:
+            </div>
+            <div class="mycontent">
+                {{ form_strength.strength_type }}
+            </div>
+        </div>
+        <div class="strength-comment">
+            <div class="descr">
+                Kommentar:
+            </div>
+            <div class="mycontent">
+                {{ form_strength.strength_comment }}
+            </div>
+        </div>
         <button id="add-form" type="button" class="button">Übung hinzufügen</button>
         <button id="remove-form" type="button" class="button">Übung entfernen</button>
-    <table>
-        {% for f in form_strength %}
-            {% if f.label != 'Datum' %}
-        <tr>
-            <td>{{ f.label }}</td>
-            <td>{{ f }}</td>
-        </tr>
-            {% endif %}
-        {% endfor %}
-    </table>
-
 
     <h1>{{ wod_type }}</h1>
     <table>
@@ -58,6 +85,7 @@
     let addButton = document.querySelector("#add-form")
     let removeButton = document.querySelector("#remove-form")
     let totalForms = document.querySelector("#id_form-TOTAL_FORMS")
+    let strengthType = document.querySelector(".strength-type")
 
     let formNum = birdForm.length-1
     addButton.addEventListener('click', addForm)
@@ -71,7 +99,8 @@
 
         formNum++
         newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`)
-        container.insertBefore(newForm, addButton)
+        {#container.insertBefore(newForm, addButton)#}
+        container.insertBefore(newForm, strengthType)
 
         totalForms.setAttribute('value', `${formNum+1}`)
     }
@@ -86,6 +115,38 @@
         {##}
         {#let lastForm = birdForm#}
         {#container.remove()#}
+    }
+
+    let setsInputs = document.querySelector("#id_strength_sets")
+    let repsForm = document.querySelectorAll(".reps-strength-form")
+    let repIdentifier = document.querySelector(".rep-identify")
+    let totalRepForms = document.querySelector("#id_reps-TOTAL_FORMS")
+
+    let formNumReps = repsForm.length
+    setsInputs.addEventListener('change', addRepForm)
+
+    function addRepForm(e){
+        e.preventDefault()
+
+        let newRepForm = repsForm[0].cloneNode(true)
+        let setsNum = setsInputs.value
+        let formRepRegex = RegExp(`reps-(\\d){1}-`,'g')
+
+        if (setsNum > formNumReps) {
+            formNumReps++
+            newRepForm.innerHTML = newRepForm.innerHTML.replace(formRepRegex, `reps-${formNumReps-1}-`)
+            container.insertBefore(newRepForm, repIdentifier)
+            totalRepForms.setAttribute('value', `${formNumReps}`)
+        } else {
+            formNumReps--
+            let allRepElements = document.querySelectorAll(".reps-strength-form")
+            let lastRepElement = allRepElements[allRepElements.length - 1]
+
+            lastRepElement.parentNode.removeChild(lastRepElement)
+        }
+
+        {#formNumReps++#}
+        {#alert(formNumReps);#}
     }
 
 </script>

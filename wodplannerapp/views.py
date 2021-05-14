@@ -5,7 +5,13 @@ from .models import *
 from django.http import Http404
 from django.urls import reverse
 from django.views import generic
-from .forms import WodFormTime, WodFormRounds, StrengthForm, MovementFormSet
+from .forms import WodFormTime, WodFormRounds, StrengthForm, MovementFormSet, RepsFormSet
+from itertools import groupby
+
+
+def all_equal(iterable):
+    g = groupby(iterable)
+    return next(g, True) and not next(g, False)
 
 
 class IndexView(generic.ListView):
@@ -70,9 +76,10 @@ def define_wod(request, schema_key):
             form = WodFormTime(request.POST)
         else:
             form = WodFormRounds(request.POST)
-        form_strength = StrengthForm(request.POST)
-        form_test = MovementFormSet(request.POST)
 
+        form_strength = StrengthForm(request.POST)
+        form_strength_movement = MovementFormSet(request.POST)
+        form_reps = RepsFormSet(request.POST, prefix='reps')
         if form_strength.is_valid() and form.is_valid():
             strength_type = form_strength.cleaned_data['strength_type']
             strength_comment = form_strength.cleaned_data['strength_comment']
@@ -83,11 +90,27 @@ def define_wod(request, schema_key):
                       wod_schema=schema.schema_name, wod_time_rounds=wod_time_rounds, wod_comment=wod_comment)
             wod.save()
 
-            for f in form_test:
+            sets_strength = form_strength.cleaned_data['strength_sets']
+            print('Number of sets %d (%d)' % (len(form_reps), sets_strength))
+            set_reps = []
+            for f in form_reps:
+                if f.is_valid():
+                    for k in f.cleaned_data.keys():
+                        set_reps.append(f.cleaned_data[k])
+
+            if all_equal(set_reps) and len(set_reps) > 0:
+                strength_sets_reps = '%dx%d' % (len(set_reps), set_reps[0])
+            elif not all_equal(set_reps):
+                strength_sets_reps = '-'.join(str(x) for x in set_reps)
+            else:
+                strength_sets_reps = '%d' % sets_strength
+
+            print("Number movements %d" % len(form_strength_movement))
+            for f in form_strength_movement:
                 if f.is_valid():
                     for k in f.cleaned_data.keys():
                         sm = StrengthMovement(wod=wod, strength_movement=f.cleaned_data[k],
-                                              strength_sets_reps='5x5')
+                                              strength_sets_reps=strength_sets_reps)
                         sm.save()
 
             # redirect to a new URL:
@@ -101,13 +124,15 @@ def define_wod(request, schema_key):
             form = WodFormRounds()
         form_strength = StrengthForm()
         form_strength_movement = MovementFormSet()
+        form_reps = RepsFormSet(prefix='reps')
 
     wod_type = schema.schema_name
-    # wod_type = schema_key
+
     return render(request, 'wodplannerapp/definewod.html', {'form_strength': form_strength,
                                                             'form_wod': form, 'wod_type': wod_type,
                                                             'schema_key': schema_key,
-                                                            'form_strength_movement': form_strength_movement})
+                                                            'form_strength_movement': form_strength_movement,
+                                                            'form_reps': form_reps})
 
 
 def success(request):

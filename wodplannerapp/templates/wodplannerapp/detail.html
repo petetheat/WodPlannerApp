@@ -7,7 +7,7 @@
 
 <div id="app-content">
     <div class="simple-container">
-        <img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154">
+        <a href="{% url 'wodplannerapp:index' %}"><img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154"></a>
 
         {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
         <h1><b>Datum:</b> {{ wod.pub_date|date:'M d, Y' }}</h1>
@@ -43,7 +43,7 @@
             {% if wod.wod_comment != "-" %}{{ wod.wod_comment }}{% endif %}
         </div>
         <div>
-            <a href="{% url 'wodplannerapp:index' %}" class="button">Zurück</a>
+            <a href="{% url 'wodplannerapp:wodoverview' %}" class="button">Zurück</a>
         </div>
     </div>
 </div>

@@ -13,10 +13,28 @@ body {
 	color: #aaa;
 }
 
+.descr {
+	width: 150px;
+	display: inline-block;
+	/*float: left;*/
+}
+
+.mycontent {
+	width: 150px;
+	display: inline-block;
+	/*float: left;*/
+	/*overflow: hidden;*/
+}
+
+.reps-strength-form {
+	width: 20px;
+	display: inline-block;
+}
+
 .simple-container {
 	max-width: 800px;
 	margin: 0 auto;
-	padding-top: 70px;
+	padding-top: 30px;
 	padding-bottom: 20px;
 }
 
@@ -123,14 +141,14 @@ th, td {
 }
 
 select {
-  margin: 20px;
+  margin: 5px;
   width: 100px;
-  padding: 5px 35px 5px 5px;
+  /*padding: 5px 35px 5px 5px;*/
   font-size: 16px;
   border: 1px solid #CCC;
-  /*height: 34px;*/
+  /*!*height: 34px;*!*/
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background: url(https://stackoverflow.com/favicon.ico) 96% / 15% no-repeat #EEE;
+  /*background: url(https://stackoverflow.com/favicon.ico) 96% / 15% no-repeat #EEE;*/
 }

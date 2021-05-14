@@ -6,9 +6,11 @@ STRENGTH_CHOICES = [
     ('Lower', 'Lower'),
     ('Upper', 'Upper'),
     ('Skill', 'Skill'),
-    ('Oly', 'Oly')
+    ('Oly', 'Oly'),
+    ('Core', 'Core')
 ]
 YEARS = [str(x) for x in range(2020, 2031, 1)]
+INITIAL_SET_NUMBER = 5
 
 
 class MovementForm(forms.Form):
@@ -16,6 +18,13 @@ class MovementForm(forms.Form):
 
 
 MovementFormSet = forms.formset_factory(MovementForm, extra=1)
+
+
+class RepsForm(forms.Form):
+    number_reps = forms.IntegerField(label='Reps', min_value=1, required=True)
+
+
+RepsFormSet = forms.formset_factory(RepsForm, extra=INITIAL_SET_NUMBER)
 
 
 class WodFormTime(forms.Form):
@@ -32,3 +41,4 @@ class StrengthForm(forms.Form):
     date = forms.DateField(widget=forms.SelectDateWidget(years=YEARS), label='Datum')
     strength_type = forms.CharField(label='Belastungsart', max_length=5, widget=forms.Select(choices=STRENGTH_CHOICES))
     strength_comment = forms.CharField(label='Kommentar', max_length=100, required=False)
+    strength_sets = forms.IntegerField(label='Sets', initial=INITIAL_SET_NUMBER, min_value=1)
