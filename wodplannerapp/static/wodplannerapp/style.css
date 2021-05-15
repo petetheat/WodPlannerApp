@@ -37,10 +37,10 @@ body {
 	display: inline-block;
 }
 
-.reps-strength-form {
-	width: 20px;
-	/*display: inline-block;*/
-}
+/*.reps-strength-form {*/
+/*	width: 20px;*/
+/*	!*display: inline-block;*!*/
+/*}*/
 
 .simple-container {
 	max-width: 400px;

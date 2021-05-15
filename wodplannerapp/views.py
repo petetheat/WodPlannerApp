@@ -81,6 +81,7 @@ def define_wod(request, schema_key):
         form_strength_movement = MovementFormSet(request.POST, prefix='strengthmove')
         form_reps = RepsFormSet(request.POST, prefix='reps')
         form_wod_movement = MovementFormSet(request.POST, prefix='wodmove')
+
         if form_strength.is_valid() and form.is_valid():
             strength_type = form_strength.cleaned_data['strength_type']
             strength_comment = form_strength.cleaned_data['strength_comment']
@@ -91,8 +92,8 @@ def define_wod(request, schema_key):
                       wod_schema=schema.schema_name, wod_time_rounds=wod_time_rounds, wod_comment=wod_comment)
             wod.save()
 
-            sets_strength = form_strength.cleaned_data['strength_sets']
-            print('Number of sets %d (%d)' % (len(form_reps), sets_strength))
+            # sets_strength = form_strength.cleaned_data['strength_sets']
+            print('Number of sets %d' % (len(form_reps)))
             set_reps = []
             for f in form_reps:
                 if f.is_valid():
@@ -104,7 +105,7 @@ def define_wod(request, schema_key):
             elif not all_equal(set_reps):
                 strength_sets_reps = '-'.join(str(x) for x in set_reps)
             else:
-                strength_sets_reps = '%d' % sets_strength
+                strength_sets_reps = '%d' % 5#sets_strength
 
             print("Number movements %d" % len(form_strength_movement))
             for f in form_strength_movement:
@@ -124,7 +125,7 @@ def define_wod(request, schema_key):
         else:
             form = WodFormRounds()
         form_strength = StrengthForm()
-        form_strength_movement = RepsFormSet(prefix='test') #MovementFormSet(prefix='strengthmove')
+        form_strength_movement = MovementFormSet(prefix='strengthmove')
         form_reps = RepsFormSet(prefix='reps')
         # form_wod_movement = MovementFormSet(prefix='wodmove')
 
