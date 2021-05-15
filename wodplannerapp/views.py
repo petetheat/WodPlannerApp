@@ -105,7 +105,7 @@ def define_wod(request, schema_key):
             elif not all_equal(set_reps):
                 strength_sets_reps = '-'.join(str(x) for x in set_reps)
             else:
-                strength_sets_reps = '%d' % 5#sets_strength
+                strength_sets_reps = '%dx[..]' % len(form_reps)
 
             print("Number movements %d" % len(form_strength_movement))
             for f in form_strength_movement:
