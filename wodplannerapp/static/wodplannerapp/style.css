@@ -5,6 +5,13 @@
 	box-sizing: border-box;
 }
 
+p.event_desc {
+  display: table-cell;
+  vertical-align: middle;
+  border: 1px solid #f00;
+  font-size: 16px;
+}
+
 body {
 	font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
 	line-height: 1.75em;
@@ -26,9 +33,13 @@ body {
 	/*overflow: hidden;*/
 }
 
+.rounds {
+	display: inline-block;
+}
+
 .reps-strength-form {
 	width: 20px;
-	display: inline-block;
+	/*display: inline-block;*/
 }
 
 .simple-container {

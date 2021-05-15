@@ -12,20 +12,28 @@
 
     <form id="form-container" method="post" action="{% url 'wodplannerapp:definewod' schema_key %}">
     {% csrf_token %}
-
-        <h1>Datum: {{ form_strength.date }}</h1>
+        <div class="date-header">
+            <h1>Datum: {{ form_strength.date }}</h1>
+            <hr>
+        </div>
+        <!-- ------------------------------------------------------------------------------------------------------ -->
 
         <h1>Strength/Skill:</h1>
-        Wähle die Übung aus:
-        <div>
-            <div class="descr">
-                Anzahl Sets:
-            </div>
-            <div class="mycontent">
-                {{ form_strength.strength_sets }}
+        <div class="descr">
+            Anzahl Sets:
+        </div>
+        <div class="mycontent">
+            <div id="sets-number" class="rounds">5</div>
+            <div class="rounds">
+            <img src="{% static 'wodplannerapp/images/add.png' %}" alt="add" width="16" height="16" id="add-set">
+            <img src="{% static 'wodplannerapp/images/remove.png' %}" alt="add" width="16" height="16" id="remove-set">
             </div>
         </div>
 
+        <div class="descr">
+            Reps pro Set:
+        </div>
+        <div class="mycontent"></div>
         {{ form_reps.management_form }}
         {% for form in form_reps %}
                 <div class="reps-strength-form">
@@ -34,17 +42,26 @@
         {% endfor %}
         <div class="rep-identify"></div>
 
-        {{ form_strength_movement.management_form}}
-        {% for form in form_strength_movement %}
-        <div class="movement-strength-form">
-            <div class="descr">
-                Übung:
-            </div>
-            <div class="mycontent">
-                {{ form.movement_name }}
+        <div class="descr">
+            Anzahl Übungen:
+        </div>
+        <div class="mycontent">
+            <div id="movement-numer" class="rounds">1</div>
+            <div class="rounds">
+            <img src="{% static 'wodplannerapp/images/add.png' %}" alt="add" width="16" height="16" id="add-movement">
+            <img src="{% static 'wodplannerapp/images/remove.png' %}" alt="add" width="16" height="16" id="remove-movement">
             </div>
         </div>
-        {% endfor %}
+
+        <div class="blabla">
+        {{ form_strength_movement.management_form }}
+            {% for form in form_strength_movement %}
+                <div class="movement-strength-form">
+                    {{ form }}
+                </div>
+            {% endfor %}
+        </div>
+
         <div class="strength-type">
             <div class="descr">
                 Belastungsart:
@@ -53,6 +70,7 @@
                 {{ form_strength.strength_type }}
             </div>
         </div>
+
         <div class="strength-comment">
             <div class="descr">
                 Kommentar:
@@ -61,93 +79,68 @@
                 {{ form_strength.strength_comment }}
             </div>
         </div>
-        <button id="add-form" type="button" class="button">Übung hinzufügen</button>
-        <button id="remove-form" type="button" class="button">Übung entfernen</button>
 
-        <h1>{{ wod_type }}</h1>
+        <hr>
 
-        <div>
-            <div class="descr">
-                {{ form_wod.wod_time_rounds.label }}:
-            </div>
-            <div class="mycontent">
-                {{ form_wod.wod_time_rounds }}
-            </div>
+        <!-- ------------------------------------------------------------------------------------------------------ -->
+        <div class="wod-part">
+            <h1>{{ wod_type }}:</h1>
+
         </div>
-
         <input type="submit" value="Erstellen" name="save" class="button">
     </form>
 </div>
 </div>
 
 <script>
-    let birdForm = document.querySelectorAll(".movement-strength-form")
     let container = document.querySelector("#form-container")
-    let addButton = document.querySelector("#add-form")
-    let removeButton = document.querySelector("#remove-form")
-    let totalForms = document.querySelector("#id_form-TOTAL_FORMS")
-    let strengthType = document.querySelector(".strength-type")
-
-    let formNum = birdForm.length-1
-    addButton.addEventListener('click', addForm)
-    removeButton.addEventListener('click', removeForm)
-
-    function addForm(e){
-        e.preventDefault()
-
-        let newForm = birdForm[0].cloneNode(true)
-        let formRegex = RegExp(`form-(\\d){1}-`,'g')
-
-        formNum++
-        newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formNum}-`)
-        {#container.insertBefore(newForm, addButton)#}
-        container.insertBefore(newForm, strengthType)
-
-        totalForms.setAttribute('value', `${formNum+1}`)
-    }
-
-    function removeForm(e){
-        e.preventDefault()
-        let allElements = document.querySelectorAll(".movement-strength-form");
-        let lastElem = allElements[allElements.length - 1]
-
-        lastElem.parentNode.removeChild(lastElem);
-        {#document.getElementById("demo").innerHTML = ;#}
-        {##}
-        {#let lastForm = birdForm#}
-        {#container.remove()#}
-    }
-
-    let setsInputs = document.querySelector("#id_strength_sets")
+    let addSetButton = document.querySelector("#add-set")
+    let removeSetButton = document.querySelector("#remove-set")
+    let numberSets = document.querySelector("#sets-number")
     let repsForm = document.querySelectorAll(".reps-strength-form")
     let repIdentifier = document.querySelector(".rep-identify")
     let totalRepForms = document.querySelector("#id_reps-TOTAL_FORMS")
 
-    let formNumReps = repsForm.length
-    setsInputs.addEventListener('change', addRepForm)
+    let setsNum = repsForm.length
 
-    function addRepForm(e){
+
+    addSetButton.addEventListener('click', addSet)
+    addSetButton.addEventListener('mouseover',function(e){
+                                                let cursor = e.target.style.cursor;
+                                                console.log(cursor);
+
+                                              });
+    removeSetButton.addEventListener('click', removeSet)
+
+    function addSet(e) {
         e.preventDefault()
 
         let newRepForm = repsForm[0].cloneNode(true)
-        let setsNum = setsInputs.value
         let formRepRegex = RegExp(`reps-(\\d){1}-`,'g')
 
-        if (setsNum > formNumReps) {
-            formNumReps++
-            newRepForm.innerHTML = newRepForm.innerHTML.replace(formRepRegex, `reps-${formNumReps-1}-`)
-            container.insertBefore(newRepForm, repIdentifier)
-            totalRepForms.setAttribute('value', `${formNumReps}`)
-        } else {
-            formNumReps--
+        setsNum++
+        newRepForm.innerHTML = newRepForm.innerHTML.replace(formRepRegex, `reps-${setsNum-1}-`)
+
+        totalRepForms.setAttribute('value', `${setsNum}`)
+        numberSets.innerHTML = setsNum.toString()
+
+        alert(repsForm.length)
+        container.insertBefore(newRepForm, repIdentifier)
+
+
+    }
+    function removeSet(e) {
+        e.preventDefault()
+        if (setsNum > 1) {
+            setsNum--
+            numberSets.innerHTML = setsNum.toString()
+
             let allRepElements = document.querySelectorAll(".reps-strength-form")
             let lastRepElement = allRepElements[allRepElements.length - 1]
 
             lastRepElement.parentNode.removeChild(lastRepElement)
+            totalRepForms.setAttribute('value', `${setsNum}`)
         }
-
-        {#formNumReps++#}
-        {#alert(formNumReps);#}
     }
-
 </script>
+
