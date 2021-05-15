@@ -14,10 +14,22 @@ INITIAL_SET_NUMBER = 5
 
 
 class MovementForm(forms.Form):
-    movement_name = forms.ModelChoiceField(queryset=Movement.objects.all(), initial=0, label='Übung')
+    movement_name = forms.ModelChoiceField(queryset=Movement.objects.order_by('movement_name'), initial=0,
+                                           label='Übung')
 
 
 MovementFormSet = forms.formset_factory(MovementForm, extra=1)
+
+
+class WodMovementForm(forms.Form):
+    wod_movement_name = forms.ModelChoiceField(queryset=Movement.objects.order_by('movement_name'), initial=0,
+                                               label='Übung')
+    wod_reps = forms.IntegerField(label='Reps', min_value=1, required=False)
+    wod_weight_m = forms.IntegerField(label='Gewicht M', min_value=0, required=False)
+    wod_weight_f = forms.IntegerField(label='Gewicht W', min_value=0, required=False)
+
+
+WodMovementFormSet = forms.formset_factory(WodMovementForm, extra=2)
 
 
 class RepsForm(forms.Form):
@@ -33,7 +45,13 @@ class WodFormTime(forms.Form):
 
 
 class WodFormRounds(forms.Form):
-    wod_time_rounds = forms.IntegerField(label='Anzahl Runden', initial=3, min_value=1)
+    wod_time_rounds = forms.IntegerField(label='Anzahl Runden', initial=3, min_value=1, required=False)
+    wod_comment = forms.CharField(label='Kommentar', max_length=200, required=False)
+
+
+class WodFormTimeRepeat(forms.Form):
+    wod_sets = forms.IntegerField(label='Anzahl Runden', initial=3, min_value=1)
+    wod_time_rounds = forms.CharField(label='Zeit', max_length=200, initial='5:00')
     wod_comment = forms.CharField(label='Kommentar', max_length=200, required=False)
 
 
