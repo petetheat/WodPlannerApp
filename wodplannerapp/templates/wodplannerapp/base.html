@@ -8,11 +8,13 @@
     <link rel="stylesheet" type="text/css" href="{% static 'wodplannerapp/style.css' %}">
 </head>
 <body>
+
     <div id="app-content">
         <div class="simple-container">
-            <a href="{% url 'wodplannerapp:index' %}"><img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154"></a>
+            <a href="{% url 'wodplannerapp:index' %}"><img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154" class="center"></a>
 
         {% block content %}
+
 
         {% endblock %}
 

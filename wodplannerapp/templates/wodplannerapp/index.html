@@ -1,11 +1,6 @@
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-
+{% extends 'wodplannerapp/base.html' %}
 {% load static %}
-
-<link rel="stylesheet" type="text/css" href="{% static 'wodplannerapp/style.css' %}">
-<div id="app-content">
-    <div class="simple-container">
-        <img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154">
+{% block content %}
 
         <h1>WOD Planner</h1>
 
@@ -22,8 +17,12 @@
                 <td><img src="{% static 'wodplannerapp/images/icons8-einstellungen-100.png' %}" alt="Settings" width="64" height="64"></td>
                 <td>Einstellungen</td>
             </tr>
+            <tr>
+                <td><a href="{% url 'wodplannerapp:calendar' year month %}">Calendar</a></td>
+                <td></td>
+            </tr>
         </table>
-    </div>
-</div>
+
+{% endblock %}
 
 

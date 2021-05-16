@@ -14,14 +14,14 @@
 
         <h2>Strength/Skill:</h2>
         <div>
-            <table>
+
             {% for choice in wod.strengthmovement_set.all %}
-                <tr>
-                    <td>{{ choice.strength_sets_reps }}</td>
-                    <td>{{ choice.strength_movement }}</td>
-                </tr>
+                <div>
+                    <div class="sets-num">{{ choice.strength_sets_reps }}</div>
+                    <div class="mycontent6">{{ choice.strength_movement }}</div>
+                </div>
             {% endfor %}
-            </table>
+
             {% if wod.strength_comment != "-" %}{{ wod.strength_comment }}{% endif %}
 
             <h2>WOD:</h2>
@@ -30,15 +30,15 @@
             {% else %}
             {{ wod.wod_time_rounds }} {{ wod.wod_schema }}
             {% endif %}
-            <table>
+
             {% for choice in wod.wodmovement_set.all %}
-                <tr>
-                    <td>{{ choice.wod_reps }}</td>
-                    <td>{{ choice.wod_movement }}</td>
-                    <td>{% ifnotequal choice.wod_weight "-" %}{{ choice.wod_weight }}{% endifnotequal %}</td>
-                </tr>
+                <div>
+                    <div class="rounds-wod">{{ choice.wod_reps }}</div>
+                    <div class="mycontent6">{{ choice.wod_movement }}</div>
+                    <div class="mycontent7">{% ifnotequal choice.wod_weight "-" %}{{ choice.wod_weight }}{% endifnotequal %}</div>
+                </div>
             {% endfor %}
-            </table>
+
 
             {% if wod.wod_comment != "-" %}{{ wod.wod_comment }}{% endif %}
         </div>

@@ -8,8 +8,9 @@ from django.views import generic
 from .forms import *
 from itertools import groupby
 
+import datetime
 import calendar
-from calendar import HTMLCalendar
+from .utils import Calendar
 
 
 def all_equal(iterable):
@@ -17,13 +18,24 @@ def all_equal(iterable):
     return next(g, True) and not next(g, False)
 
 
-class IndexView(generic.ListView):
-    template_name = 'wodplannerapp/index.html'
-    context_object_name = 'latest_question_list'
+def previous_month(t):
+    t_prev = t.replace(day=1) - datetime.timedelta(days=1)
+    return t_prev.year, t_prev.month
 
-    def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
+
+def next_month(t):
+    last_day = calendar.monthrange(t.year, t.month)[-1]
+    t_next = t.replace(day=last_day) + datetime.timedelta(days=1)
+    return t_next.year, t_next.month
+
+
+def index_view(request):
+    t_now = datetime.datetime.now()
+    year = t_now.year
+    month = t_now.month
+    template_name = 'wodplannerapp/index.html'
+
+    return render(request, template_name, {'year': year, 'month': month})
 
 
 class DetailView(generic.DetailView):
@@ -181,6 +193,13 @@ def success(request):
 
 
 def calendar_view(request, year, month):
-    mycalendar = HTMLCalendar()
-    context_dict = {'year': year, 'month': month, 'test': mycalendar.formatmonth(2021, 5)}
+    mycalendar = Calendar()
+    t = datetime.datetime(year, month, 1, 0, 0, 0, 0)
+    year_next, month_next = next_month(t)
+    year_prev, month_prev = previous_month(t)
+
+    context_dict = {'year': year, 'month': month,
+                    'year_next': year_next, 'month_next': month_next,
+                    'year_prev': year_prev, 'month_prev': month_prev,
+                    'calendar': mycalendar.formatmonth(year, month)}
     return render(request, 'wodplannerapp/calendar.html', context_dict)

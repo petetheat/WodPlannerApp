@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
 
 
 class Question(models.Model):
@@ -52,6 +53,11 @@ class Wod(models.Model):
 
     def __str__(self):
         return 'WOD%d' % self.id
+
+    @property
+    def get_html_url(self):
+        url = reverse('wodplannerapp:detail', args=(self.id,))
+        return f'<a href="{url}" class="button-calendar"> {self.strength_type}<br>{self.wod_schema} </a>'
 
 
 class StrengthMovement(models.Model):
