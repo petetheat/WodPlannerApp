@@ -24,7 +24,8 @@ MovementFormSet = forms.formset_factory(MovementForm, extra=1)
 class WodMovementForm(forms.Form):
     wod_movement_name = forms.ModelChoiceField(queryset=Movement.objects.order_by('movement_name'), initial=0,
                                                label='Übung')
-    wod_reps = forms.IntegerField(label='Reps', min_value=1, required=False)
+    # wod_reps = forms.IntegerField(label='Reps', min_value=1, required=False)
+    wod_reps = forms.CharField(label='Reps', max_length=20, required=False)
     wod_weight_m = forms.IntegerField(label='Gewicht M', min_value=0, required=False)
     wod_weight_f = forms.IntegerField(label='Gewicht W', min_value=0, required=False)
 
@@ -56,7 +57,8 @@ class WodFormTimeRepeat(forms.Form):
 
 
 class StrengthForm(forms.Form):
-    date = forms.DateTimeField(widget=forms.SelectDateWidget(years=YEARS), label='Datum')
+    # date = forms.DateTimeField(widget=forms.SelectDateWidget(years=YEARS), label='Datum')
+    date = forms.DateField(input_formats=['%d/%m/%Y'])
     strength_type = forms.CharField(label='Belastungsart', max_length=5, widget=forms.Select(choices=STRENGTH_CHOICES))
     strength_comment = forms.CharField(label='Kommentar', max_length=100, required=False)
     # strength_sets = forms.IntegerField(label='Sets', initial=INITIAL_SET_NUMBER, min_value=1)

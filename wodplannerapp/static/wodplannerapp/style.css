@@ -232,3 +232,7 @@ input {
 #id_wod_comment {
 	width: 100%;
 }
+
+#id_date{
+	width: 120px;
+}
