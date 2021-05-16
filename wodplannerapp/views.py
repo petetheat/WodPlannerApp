@@ -8,6 +8,9 @@ from django.views import generic
 from .forms import *
 from itertools import groupby
 
+import calendar
+from calendar import HTMLCalendar
+
 
 def all_equal(iterable):
     g = groupby(iterable)
@@ -175,3 +178,9 @@ def define_wod(request, schema_key):
 
 def success(request):
     return render(request, 'wodplannerapp/success.html')
+
+
+def calendar_view(request, year, month):
+    mycalendar = HTMLCalendar()
+    context_dict = {'year': year, 'month': month, 'test': mycalendar.formatmonth(2021, 5)}
+    return render(request, 'wodplannerapp/calendar.html', context_dict)

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <title>WodPlannerApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'wodplannerapp/style.css' %}">
+</head>
+<body>
+    <div id="app-content">
+        <div class="simple-container">
+            <a href="{% url 'wodplannerapp:index' %}"><img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154"></a>
+
+        {% block content %}
+
+        {% endblock %}
+
+        </div>
+    </div>
+
+
+</body>
+</html>
