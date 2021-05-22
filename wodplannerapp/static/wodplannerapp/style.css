@@ -237,7 +237,7 @@ aside,
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 12px;
+  font-size: 10px;
   max-width: 60px;
   min-width: 60px;
 }
@@ -275,10 +275,10 @@ input {
 	width: 120px;
 }
 
-th, td {
-  width: 40px;
-  height: 40px;
-}
+/*th, td {*/
+/*  width: 40px;*/
+/*  height: 40px;*/
+/*}*/
 
 td.sat {
 	background-color: dimgray;

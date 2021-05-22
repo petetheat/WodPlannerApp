@@ -43,7 +43,15 @@ class Schemas(models.Model):
         return self.schema_name
 
 
+class Track(models.Model):
+    track = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.track
+
+
 class Wod(models.Model):
+    track = models.ForeignKey(Track, on_delete=models.CASCADE)
     pub_date = models.DateTimeField('date published')
     strength_type = models.CharField(max_length=200)
     strength_comment = models.CharField(max_length=200)
@@ -57,7 +65,7 @@ class Wod(models.Model):
     @property
     def get_html_url(self):
         url = reverse('wodplannerapp:detail', args=(self.id,))
-        return f'<a href="{url}" class="button-calendar"> {self.strength_type}<br>{self.wod_schema} </a>'
+        return f'<a href="{url}" class="button-calendar"> {self.track} </a>'
 
 
 class StrengthMovement(models.Model):

@@ -94,12 +94,16 @@ def define_wod(request, schema_key):
         else:
             form = WodFormRounds(request.POST)
 
+        form_track = TrackForm(request.POST)
         form_strength = StrengthForm(request.POST)
         form_strength_movement = MovementFormSet(request.POST, prefix='strengthmove')
         form_reps = RepsFormSet(request.POST, prefix='reps')
         form_wod_movement = WodMovementFormSet(request.POST, prefix='wodmove')
 
-        if form_strength.is_valid() and form.is_valid():
+        if form_strength.is_valid() and form.is_valid() and form_track.is_valid():
+            track_type = form_track.cleaned_data['track_type']
+            track = Track.objects.get(track=track_type)
+
             strength_type = form_strength.cleaned_data['strength_type']
             strength_comment = form_strength.cleaned_data['strength_comment']
             date = form_strength.cleaned_data['date']
@@ -112,7 +116,7 @@ def define_wod(request, schema_key):
                 wod_time_rounds = '%sx%s' % (n_rounds, n_time)
             wod_comment = form.cleaned_data['wod_comment']
 
-            wod = Wod(strength_type=strength_type, pub_date=date, strength_comment=strength_comment,
+            wod = Wod(track=track, strength_type=strength_type, pub_date=date, strength_comment=strength_comment,
                       wod_schema=schema.schema_name, wod_time_rounds=wod_time_rounds, wod_comment=wod_comment)
             wod.save()
 
@@ -173,6 +177,8 @@ def define_wod(request, schema_key):
             form = WodFormTime()
         else:
             form = WodFormRounds()
+
+        form_track = TrackForm()
         form_strength = StrengthForm()
         form_strength_movement = MovementFormSet(prefix='strengthmove')
         form_reps = RepsFormSet(prefix='reps')
@@ -185,7 +191,8 @@ def define_wod(request, schema_key):
                                                             'form_wod_movement': form_wod_movement,
                                                             'schema_key': schema_key,
                                                             'form_strength_movement': form_strength_movement,
-                                                            'form_reps': form_reps})
+                                                            'form_reps': form_reps,
+                                                            'form_track': form_track})
 
 
 def success(request):

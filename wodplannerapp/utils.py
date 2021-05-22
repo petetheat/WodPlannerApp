@@ -18,7 +18,7 @@ class Calendar(HTMLCalendar):
             # d += f'{event.wod_schema}'
 
         if day != 0:
-            return f"<td class='{WEEK_DAY_DICT[weekday].lower()}'><span class='date'>{day}</span>{d}</td>"
+            return f"<td class='{WEEK_DAY_DICT[weekday].lower()}'><span class='date'>{day}</span><br>{d}</td>"
         return '<td></td>'
 
     def formatweek(self, theweek, events):
