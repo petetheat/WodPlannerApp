@@ -210,3 +210,10 @@ def calendar_view(request, year, month):
                     'year_prev': year_prev, 'month_prev': month_prev,
                     'calendar': mycalendar.formatmonth(year, month)}
     return render(request, 'wodplannerapp/calendar.html', context_dict)
+
+
+def day_view(request, year, month, day):
+    wods = Wod.objects.filter(pub_date__year=year, pub_date__month=month, pub_date__day=day)
+
+    context_dict = {'wods': wods}
+    return render(request, 'wodplannerapp/dayview.html', context_dict)
