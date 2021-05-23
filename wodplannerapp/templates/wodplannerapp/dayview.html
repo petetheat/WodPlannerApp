@@ -1,0 +1,21 @@
+{% extends 'wodplannerapp/base.html' %}
+{% load static %}
+{% block content %}
+
+    <h1>Verfügbare Tracks:</h1>
+
+    {% for wod in wods %}
+        <h2>{{ wod.track }}:</h2>
+        <a href="{% url 'wodplannerapp:detail' wod.id %}" class="button">{{ wod.strength_type }} - {{ wod.wod_schema }}</a>
+    {% endfor %}
+
+    <br><br>
+
+
+    {% with wods|first as wod %}
+    <div>
+        <a href="{% url 'wodplannerapp:calendar' wod.pub_date|date:'Y' wod.pub_date|date:'m' %}" class="button">Zurück</a>
+    </div>
+    {% endwith %}
+
+{% endblock %}

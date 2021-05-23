@@ -62,3 +62,7 @@ class StrengthForm(forms.Form):
     strength_type = forms.CharField(label='Belastungsart', max_length=5, widget=forms.Select(choices=STRENGTH_CHOICES))
     strength_comment = forms.CharField(label='Kommentar', max_length=100, required=False)
     # strength_sets = forms.IntegerField(label='Sets', initial=INITIAL_SET_NUMBER, min_value=1)
+
+
+class TrackForm(forms.Form):
+    track_type = forms.ModelChoiceField(queryset=Track.objects.order_by('track'), initial=0, label='Track')

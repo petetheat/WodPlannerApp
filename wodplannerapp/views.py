@@ -8,24 +8,48 @@ from django.views import generic
 from .forms import *
 from itertools import groupby
 
+import datetime
+import calendar
+from .utils import Calendar
+
 
 def all_equal(iterable):
     g = groupby(iterable)
     return next(g, True) and not next(g, False)
 
 
-class IndexView(generic.ListView):
+def previous_month(t):
+    t_prev = t.replace(day=1) - datetime.timedelta(days=1)
+    return t_prev.year, t_prev.month
+
+
+def next_month(t):
+    last_day = calendar.monthrange(t.year, t.month)[-1]
+    t_next = t.replace(day=last_day) + datetime.timedelta(days=1)
+    return t_next.year, t_next.month
+
+
+def index_view(request):
+    t_now = datetime.datetime.now()
+    year = t_now.year
+    month = t_now.month
     template_name = 'wodplannerapp/index.html'
-    context_object_name = 'latest_question_list'
 
-    def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
+    return render(request, template_name, {'year': year, 'month': month})
 
 
-class DetailView(generic.DetailView):
-    model = Wod
+def detail_view(request, wod_id):
+    wod = get_object_or_404(Wod, pk=wod_id)
+
+    t_now = datetime.datetime.now()
+    year = t_now.year
+    month = t_now.month
+    day = t_now.day
+
+    context_dict = {'wod': wod, 'year': year, 'month': month, 'day': day}
     template_name = 'wodplannerapp/detail.html'
+
+    return render(request, template_name, context_dict)
 
 
 class ResultsView(generic.DetailView):
@@ -79,12 +103,16 @@ def define_wod(request, schema_key):
         else:
             form = WodFormRounds(request.POST)
 
+        form_track = TrackForm(request.POST)
         form_strength = StrengthForm(request.POST)
         form_strength_movement = MovementFormSet(request.POST, prefix='strengthmove')
         form_reps = RepsFormSet(request.POST, prefix='reps')
         form_wod_movement = WodMovementFormSet(request.POST, prefix='wodmove')
 
-        if form_strength.is_valid() and form.is_valid():
+        if form_strength.is_valid() and form.is_valid() and form_track.is_valid():
+            track_type = form_track.cleaned_data['track_type']
+            track = Track.objects.get(track=track_type)
+
             strength_type = form_strength.cleaned_data['strength_type']
             strength_comment = form_strength.cleaned_data['strength_comment']
             date = form_strength.cleaned_data['date']
@@ -97,7 +125,7 @@ def define_wod(request, schema_key):
                 wod_time_rounds = '%sx%s' % (n_rounds, n_time)
             wod_comment = form.cleaned_data['wod_comment']
 
-            wod = Wod(strength_type=strength_type, pub_date=date, strength_comment=strength_comment,
+            wod = Wod(track=track, strength_type=strength_type, pub_date=date, strength_comment=strength_comment,
                       wod_schema=schema.schema_name, wod_time_rounds=wod_time_rounds, wod_comment=wod_comment)
             wod.save()
 
@@ -158,6 +186,8 @@ def define_wod(request, schema_key):
             form = WodFormTime()
         else:
             form = WodFormRounds()
+
+        form_track = TrackForm()
         form_strength = StrengthForm()
         form_strength_movement = MovementFormSet(prefix='strengthmove')
         form_reps = RepsFormSet(prefix='reps')
@@ -170,8 +200,29 @@ def define_wod(request, schema_key):
                                                             'form_wod_movement': form_wod_movement,
                                                             'schema_key': schema_key,
                                                             'form_strength_movement': form_strength_movement,
-                                                            'form_reps': form_reps})
+                                                            'form_reps': form_reps,
+                                                            'form_track': form_track})
 
 
 def success(request):
     return render(request, 'wodplannerapp/success.html')
+
+
+def calendar_view(request, year, month):
+    mycalendar = Calendar()
+    t = datetime.datetime(year, month, 1, 0, 0, 0, 0)
+    year_next, month_next = next_month(t)
+    year_prev, month_prev = previous_month(t)
+
+    context_dict = {'year': year, 'month': month,
+                    'year_next': year_next, 'month_next': month_next,
+                    'year_prev': year_prev, 'month_prev': month_prev,
+                    'calendar': mycalendar.formatmonth(year, month)}
+    return render(request, 'wodplannerapp/calendar.html', context_dict)
+
+
+def day_view(request, year, month, day):
+    wods = Wod.objects.filter(pub_date__year=year, pub_date__month=month, pub_date__day=day)
+
+    context_dict = {'wods': wods}
+    return render(request, 'wodplannerapp/dayview.html', context_dict)

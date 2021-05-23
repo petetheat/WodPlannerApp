@@ -84,7 +84,36 @@ body {
 	/*overflow: hidden;*/
 }
 
+.mycontent6 {
+	max-width: 210px;
+	min-width: 150px;
+	display: inline-block;
+	/*float: left;*/
+	/*overflow: hidden;*/
+}
+
+.mycontent7 {
+	max-width: 90px;
+	min-width: 80px;
+	display: inline-block;
+	/*float: left;*/
+	/*overflow: hidden;*/
+}
+
 .rounds {
+	display: inline-block;
+}
+
+.rounds-wod {
+	max-width: 130px;
+	min-width: 30px;
+	/*width: 140px;*/
+	display: inline-block;
+}
+
+.sets-num {
+	max-width: 140px;
+	min-width: 50px;
 	display: inline-block;
 }
 
@@ -181,10 +210,6 @@ aside,
 	}
 }
 
-th, td {
-  padding: 5px;
-}
-
 .box {
      float: left;
      padding: 20px;
@@ -202,6 +227,19 @@ th, td {
   font-size: 16px;
   max-width: 150px;
   min-width: 150px;
+}
+
+.button-calendar {
+  background-color: #344663; /* Green */
+  border: none;
+  color: white;
+  /*padding: 15px 32px;*/
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 10px;
+  max-width: 50px;
+  min-width: 50px;
 }
 
 select {
@@ -235,4 +273,61 @@ input {
 
 #id_date{
 	width: 120px;
+}
+
+/*th, td {*/
+/*  width: 40px;*/
+/*  height: 40px;*/
+/*}*/
+
+td.mon {
+	max-width: 50px;
+	min-width: 50px;
+}
+
+td.tue {
+	max-width: 50px;
+	min-width: 50px;
+}
+
+td.wed {
+	max-width: 50px;
+	min-width: 50px;
+}
+
+td.thu {
+	max-width: 50px;
+	min-width: 50px;
+}
+
+td.fri {
+	max-width: 50px;
+	min-width: 60px;
+}
+
+td.sat {
+	background-color: dimgray;
+	border-left: 2px;
+	border-color: red;
+	max-width: 50px;
+	min-width: 50px;
+}
+
+td.sun {
+	background-color: dimgray;
+	border-left: 2px;
+	border-color: red;
+	max-width: 50px;
+	min-width: 50px;
+}
+
+tr.cal-week {
+	min-height: 50px;
+	max-height: 50px;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
