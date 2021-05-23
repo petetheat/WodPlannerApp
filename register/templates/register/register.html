@@ -1,0 +1,32 @@
+{% extends "wodplannerapp/base.html" %}
+
+{% block title %}Create an Account{% endblock %}
+
+{% block content %}
+    <h1>Account erstellen:</h1>
+    <form method="POST" class="form-group">
+	{% csrf_token %}
+        <table>
+            {% for f in form %}
+            <tr>
+                <td>
+                    {% if f.name == 'username' %}Benutzername:
+                    {% elif f.name == 'email' %}Emailadresse:
+                    {% elif f.name == 'password1' %}Passwort*:
+                    {% elif f.name == 'password2' %}Passwort (wiederholen):
+                    {% endif %}
+
+                </td>
+                <td>{{ f }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    *Mindestens 8 Zeichen
+    <div class='error'>{{form.errors.username}}</div>
+    <div class='error'>{{form.errors.email}}</div>
+    <div class='error'>{{form.errors.password1}}</div>
+    <div class='error'>{{form.errors.password2}}</div>
+    <br>
+	<button type="submit" class="button">Registrieren</button>
+    </form>
+{% endblock %}

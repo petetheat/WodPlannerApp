@@ -1,0 +1,25 @@
+{% extends "wodplannerapp/base.html" %}
+
+{% block title %}
+Login Here
+{% endblock %}
+
+
+{% block content %}
+     <form method="post" class="from-group">
+	{% csrf_token %}
+         <table>
+             <tr>
+                 <td>Benutzer:</td>
+                 <td>{{ form.username }}</td>
+             </tr>
+             <tr>
+                 <td>Passwort:</td>
+                 <td>{{ form.password }}</td>
+             </tr>
+         </table>
+
+	<p>Account erstellen <a href="/register" class="button">hier</a></p>
+	<button type="submit" class="button">Login</button>
+    </form>
+{% endblock %}

@@ -12,6 +12,8 @@ import datetime
 import calendar
 from .utils import Calendar
 
+from django.contrib.auth.decorators import login_required
+
 
 def all_equal(iterable):
     g = groupby(iterable)
@@ -29,6 +31,7 @@ def next_month(t):
     return t_next.year, t_next.month
 
 
+@login_required
 def index_view(request):
     t_now = datetime.datetime.now()
     year = t_now.year
@@ -38,6 +41,7 @@ def index_view(request):
     return render(request, template_name, {'year': year, 'month': month})
 
 
+@login_required
 def detail_view(request, wod_id):
     wod = get_object_or_404(Wod, pk=wod_id)
 
@@ -52,11 +56,13 @@ def detail_view(request, wod_id):
     return render(request, template_name, context_dict)
 
 
+# @login_required
 class ResultsView(generic.DetailView):
     model = Question
     template_name = 'wodplannerapp/results.html'
 
 
+# @login_required
 class CreateWodView(generic.ListView):
     template_name = 'wodplannerapp/createwod.html'
     context_object_name = 'schema_list'
@@ -65,6 +71,7 @@ class CreateWodView(generic.ListView):
         return Schemas.objects.order_by('schema_name')
 
 
+# @login_required
 class WodOverview(generic.ListView):
     template_name = 'wodplannerapp/wodoverview.html'
     context_object_name = 'wod_list'
@@ -92,6 +99,7 @@ def vote(request, question_id):
         return HttpResponseRedirect(reverse('wodplannerapp:results', args=(question.id,)))
 
 
+@login_required
 def define_wod(request, schema_key):
     schema = get_object_or_404(Schemas, schema_key=schema_key)
 
@@ -204,10 +212,12 @@ def define_wod(request, schema_key):
                                                             'form_track': form_track})
 
 
+@login_required
 def success(request):
     return render(request, 'wodplannerapp/success.html')
 
 
+@login_required
 def calendar_view(request, year, month):
     mycalendar = Calendar()
     t = datetime.datetime(year, month, 1, 0, 0, 0, 0)
@@ -221,6 +231,7 @@ def calendar_view(request, year, month):
     return render(request, 'wodplannerapp/calendar.html', context_dict)
 
 
+@login_required
 def day_view(request, year, month, day):
     wods = Wod.objects.filter(pub_date__year=year, pub_date__month=month, pub_date__day=day)
 
