@@ -1,0 +1,9 @@
+{% extends 'wodplannerapp/base.html' %}
+{% load static %}
+{% block content %}
+
+    <a href="{% url 'wodplannerapp:calendar' year_prev month_prev%}">prev</a>
+    <a href="{% url 'wodplannerapp:calendar' year_next month_next%}">next</a>
+    {{ calendar|safe }}
+
+{% endblock %}

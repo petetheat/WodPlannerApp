@@ -5,8 +5,12 @@ from .models import *
 from django.http import Http404
 from django.urls import reverse
 from django.views import generic
-from .forms import WodFormTime, WodFormRounds, StrengthForm, MovementFormSet, RepsFormSet
+from .forms import *
 from itertools import groupby
+
+import datetime
+import calendar
+from .utils import Calendar
 
 
 def all_equal(iterable):
@@ -14,18 +18,38 @@ def all_equal(iterable):
     return next(g, True) and not next(g, False)
 
 
-class IndexView(generic.ListView):
+def previous_month(t):
+    t_prev = t.replace(day=1) - datetime.timedelta(days=1)
+    return t_prev.year, t_prev.month
+
+
+def next_month(t):
+    last_day = calendar.monthrange(t.year, t.month)[-1]
+    t_next = t.replace(day=last_day) + datetime.timedelta(days=1)
+    return t_next.year, t_next.month
+
+
+def index_view(request):
+    t_now = datetime.datetime.now()
+    year = t_now.year
+    month = t_now.month
     template_name = 'wodplannerapp/index.html'
-    context_object_name = 'latest_question_list'
 
-    def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
+    return render(request, template_name, {'year': year, 'month': month})
 
 
-class DetailView(generic.DetailView):
-    model = Wod
+def detail_view(request, wod_id):
+    wod = get_object_or_404(Wod, pk=wod_id)
+
+    t_now = datetime.datetime.now()
+    year = t_now.year
+    month = t_now.month
+    day = t_now.day
+
+    context_dict = {'wod': wod, 'year': year, 'month': month, 'day': day}
     template_name = 'wodplannerapp/detail.html'
+
+    return render(request, template_name, context_dict)
 
 
 class ResultsView(generic.DetailView):
@@ -72,27 +96,39 @@ def define_wod(request, schema_key):
     schema = get_object_or_404(Schemas, schema_key=schema_key)
 
     if request.method == 'POST':
-        if 'amrap' in schema_key or 'emom' in schema_key:
+        if schema_key == 'amrap-repeat':
+            form = WodFormTimeRepeat(request.POST)
+        elif 'amrap' in schema_key or 'emom' in schema_key:
             form = WodFormTime(request.POST)
         else:
             form = WodFormRounds(request.POST)
 
+        form_track = TrackForm(request.POST)
         form_strength = StrengthForm(request.POST)
-        form_strength_movement = MovementFormSet(request.POST)
+        form_strength_movement = MovementFormSet(request.POST, prefix='strengthmove')
         form_reps = RepsFormSet(request.POST, prefix='reps')
-        form_wod_movement = MovementFormSet(request.POST, prefix='wodmove')
-        if form_strength.is_valid() and form.is_valid():
+        form_wod_movement = WodMovementFormSet(request.POST, prefix='wodmove')
+
+        if form_strength.is_valid() and form.is_valid() and form_track.is_valid():
+            track_type = form_track.cleaned_data['track_type']
+            track = Track.objects.get(track=track_type)
+
             strength_type = form_strength.cleaned_data['strength_type']
             strength_comment = form_strength.cleaned_data['strength_comment']
             date = form_strength.cleaned_data['date']
-            wod_time_rounds = form.cleaned_data['wod_time_rounds']
+
+            if schema_key != 'amrap-repeat':
+                wod_time_rounds = form.cleaned_data['wod_time_rounds'] if form.cleaned_data['wod_time_rounds'] is not None else ''
+            else:
+                n_rounds = form.cleaned_data['wod_sets']
+                n_time = form.cleaned_data['wod_time_rounds']
+                wod_time_rounds = '%sx%s' % (n_rounds, n_time)
             wod_comment = form.cleaned_data['wod_comment']
-            wod = Wod(strength_type=strength_type, pub_date=date, strength_comment=strength_comment,
+
+            wod = Wod(track=track, strength_type=strength_type, pub_date=date, strength_comment=strength_comment,
                       wod_schema=schema.schema_name, wod_time_rounds=wod_time_rounds, wod_comment=wod_comment)
             wod.save()
 
-            sets_strength = form_strength.cleaned_data['strength_sets']
-            print('Number of sets %d (%d)' % (len(form_reps), sets_strength))
             set_reps = []
             for f in form_reps:
                 if f.is_valid():
@@ -104,9 +140,8 @@ def define_wod(request, schema_key):
             elif not all_equal(set_reps):
                 strength_sets_reps = '-'.join(str(x) for x in set_reps)
             else:
-                strength_sets_reps = '%d' % sets_strength
+                strength_sets_reps = '%dx[..]' % len(form_reps)
 
-            print("Number movements %d" % len(form_strength_movement))
             for f in form_strength_movement:
                 if f.is_valid():
                     for k in f.cleaned_data.keys():
@@ -114,19 +149,49 @@ def define_wod(request, schema_key):
                                               strength_sets_reps=strength_sets_reps)
                         sm.save()
 
+            for f in form_wod_movement:
+                print(f.is_valid())
+                if f.is_valid():
+                    if f.cleaned_data['wod_reps'] is None:
+                        wod_reps = ''
+                    else:
+                        wod_reps = f.cleaned_data['wod_reps']
+
+                    if f.cleaned_data['wod_weight_m'] is None:
+                        w_m = ''
+                    else:
+                        w_m = f.cleaned_data['wod_weight_m']
+
+                    if f.cleaned_data['wod_weight_f'] is None:
+                        w_f = ''
+                    else:
+                        w_f = f.cleaned_data['wod_weight_f']
+
+                    if w_m == '' and w_f == '':
+                        weight = ''
+                    else:
+                        weight = '%skg/%skg' % (w_m, w_f)
+
+                    wm = WodMovement(wod=wod, wod_movement=f.cleaned_data['wod_movement_name'],
+                                     wod_reps=wod_reps, wod_weight=weight)
+                    wm.save()
             # redirect to a new URL:
             return HttpResponseRedirect('/wodplannerapp/success/')
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        if 'amrap' in schema_key or 'emom' in schema_key:
+        if schema_key == 'amrap-repeat':
+            form = WodFormTimeRepeat()
+        elif 'amrap' in schema_key or 'emom' in schema_key:
             form = WodFormTime()
         else:
             form = WodFormRounds()
+
+        form_track = TrackForm()
         form_strength = StrengthForm()
-        form_strength_movement = MovementFormSet()
+        form_strength_movement = MovementFormSet(prefix='strengthmove')
         form_reps = RepsFormSet(prefix='reps')
-        form_wod_movement = MovementFormSet()
+        form_wod_movement = WodMovementFormSet(prefix='wodmove')
 
     wod_type = schema.schema_name
 
@@ -135,8 +200,29 @@ def define_wod(request, schema_key):
                                                             'form_wod_movement': form_wod_movement,
                                                             'schema_key': schema_key,
                                                             'form_strength_movement': form_strength_movement,
-                                                            'form_reps': form_reps})
+                                                            'form_reps': form_reps,
+                                                            'form_track': form_track})
 
 
 def success(request):
     return render(request, 'wodplannerapp/success.html')
+
+
+def calendar_view(request, year, month):
+    mycalendar = Calendar()
+    t = datetime.datetime(year, month, 1, 0, 0, 0, 0)
+    year_next, month_next = next_month(t)
+    year_prev, month_prev = previous_month(t)
+
+    context_dict = {'year': year, 'month': month,
+                    'year_next': year_next, 'month_next': month_next,
+                    'year_prev': year_prev, 'month_prev': month_prev,
+                    'calendar': mycalendar.formatmonth(year, month)}
+    return render(request, 'wodplannerapp/calendar.html', context_dict)
+
+
+def day_view(request, year, month, day):
+    wods = Wod.objects.filter(pub_date__year=year, pub_date__month=month, pub_date__day=day)
+
+    context_dict = {'wods': wods}
+    return render(request, 'wodplannerapp/dayview.html', context_dict)

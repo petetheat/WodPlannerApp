@@ -5,6 +5,13 @@
 	box-sizing: border-box;
 }
 
+p.event_desc {
+  display: table-cell;
+  vertical-align: middle;
+  border: 1px solid #f00;
+  font-size: 16px;
+}
+
 body {
 	font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
 	line-height: 1.75em;
@@ -27,15 +34,101 @@ body {
 }
 
 .reps-strength-form {
-	width: 20px;
+	width: 50px;
+	display: inline-block;
+	/*padding-left: 10px;*/
+	/*padding-right: 10px;*/
+	/*border-style: solid;*/
+	/*border-color: #aaaaaa;*/
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+.mycontent2 {
+	width: 120px;
+	display: inline-block;
+	/*border-style: solid;*/
+	/*border-color: #aaaaaa;*/
+	font-size: 12px;
+	/*float: left;*/
+	/*overflow: hidden;*/
+}
+
+.mycontent3 {
+	width: 30px;
+	display: inline-block;
+	font-size: 10px;
+	/*border-style: solid;*/
+	/*border-color: #aaaaaa;*/
+	/*float: left;*/
+	/*overflow: hidden;*/
+}
+
+.mycontent4 {
+	width: 110px;
+	display: inline-block;
+	font-size: 12px;
+	/*border-style: solid;*/
+	/*border-color: #aaaaaa;*/
+	/*float: left;*/
+	/*overflow: hidden;*/
+}
+
+.mycontent5 {
+	width: 60px;
+	display: inline-block;
+	font-size: 12px;
+	/*border-style: solid;*/
+	/*border-color: #aaaaaa;*/
+	/*float: left;*/
+	/*overflow: hidden;*/
+}
+
+.mycontent6 {
+	max-width: 210px;
+	min-width: 150px;
+	display: inline-block;
+	/*float: left;*/
+	/*overflow: hidden;*/
+}
+
+.mycontent7 {
+	max-width: 90px;
+	min-width: 80px;
+	display: inline-block;
+	/*float: left;*/
+	/*overflow: hidden;*/
+}
+
+.rounds {
 	display: inline-block;
 }
+
+.rounds-wod {
+	max-width: 130px;
+	min-width: 30px;
+	/*width: 140px;*/
+	display: inline-block;
+}
+
+.sets-num {
+	max-width: 140px;
+	min-width: 50px;
+	display: inline-block;
+}
+
+/*.reps-strength-form {*/
+/*	width: 20px;*/
+/*	!*display: inline-block;*!*/
+/*}*/
 
 .simple-container {
 	max-width: 400px;
 	margin: 0 auto;
 	padding-top: 30px;
 	padding-bottom: 20px;
+	/*border-style: solid;*/
+	/*border-color: #aaaaaa;*/
 }
 
 .simple-print {
@@ -117,10 +210,6 @@ aside,
 	}
 }
 
-th, td {
-  padding: 5px;
-}
-
 .box {
      float: left;
      padding: 20px;
@@ -140,6 +229,19 @@ th, td {
   min-width: 150px;
 }
 
+.button-calendar {
+  background-color: #344663; /* Green */
+  border: none;
+  color: white;
+  /*padding: 15px 32px;*/
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 10px;
+  max-width: 50px;
+  min-width: 50px;
+}
+
 select {
   margin: 5px;
   width: 100px;
@@ -151,4 +253,81 @@ select {
   -moz-appearance: none;
   appearance: none;
   /*background: url(https://stackoverflow.com/favicon.ico) 96% / 15% no-repeat #EEE;*/
+}
+
+input {
+	width: 40px;
+	/*padding-left: 0px;*/
+	padding: 0;
+	margin: auto;
+	font-size: 16px;
+}
+
+#id_strength_comment {
+	width: 100%;
+}
+
+#id_wod_comment {
+	width: 100%;
+}
+
+#id_date{
+	width: 120px;
+}
+
+/*th, td {*/
+/*  width: 40px;*/
+/*  height: 40px;*/
+/*}*/
+
+td.mon {
+	max-width: 50px;
+	min-width: 50px;
+}
+
+td.tue {
+	max-width: 50px;
+	min-width: 50px;
+}
+
+td.wed {
+	max-width: 50px;
+	min-width: 50px;
+}
+
+td.thu {
+	max-width: 50px;
+	min-width: 50px;
+}
+
+td.fri {
+	max-width: 50px;
+	min-width: 60px;
+}
+
+td.sat {
+	background-color: dimgray;
+	border-left: 2px;
+	border-color: red;
+	max-width: 50px;
+	min-width: 50px;
+}
+
+td.sun {
+	background-color: dimgray;
+	border-left: 2px;
+	border-color: red;
+	max-width: 50px;
+	min-width: 50px;
+}
+
+tr.cal-week {
+	min-height: 50px;
+	max-height: 50px;
+}
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
