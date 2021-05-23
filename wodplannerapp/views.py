@@ -38,9 +38,18 @@ def index_view(request):
     return render(request, template_name, {'year': year, 'month': month})
 
 
-class DetailView(generic.DetailView):
-    model = Wod
+def detail_view(request, wod_id):
+    wod = get_object_or_404(Wod, pk=wod_id)
+
+    t_now = datetime.datetime.now()
+    year = t_now.year
+    month = t_now.month
+    day = t_now.day
+
+    context_dict = {'wod': wod, 'year': year, 'month': month, 'day': day}
     template_name = 'wodplannerapp/detail.html'
+
+    return render(request, template_name, context_dict)
 
 
 class ResultsView(generic.DetailView):

@@ -238,8 +238,8 @@ aside,
   text-decoration: none;
   display: inline-block;
   font-size: 10px;
-  max-width: 60px;
-  min-width: 60px;
+  max-width: 50px;
+  min-width: 50px;
 }
 
 select {
@@ -280,16 +280,50 @@ input {
 /*  height: 40px;*/
 /*}*/
 
+td.mon {
+	max-width: 50px;
+	min-width: 50px;
+}
+
+td.tue {
+	max-width: 50px;
+	min-width: 50px;
+}
+
+td.wed {
+	max-width: 50px;
+	min-width: 50px;
+}
+
+td.thu {
+	max-width: 50px;
+	min-width: 50px;
+}
+
+td.fri {
+	max-width: 50px;
+	min-width: 60px;
+}
+
 td.sat {
 	background-color: dimgray;
 	border-left: 2px;
 	border-color: red;
+	max-width: 50px;
+	min-width: 50px;
 }
 
 td.sun {
 	background-color: dimgray;
 	border-left: 2px;
 	border-color: red;
+	max-width: 50px;
+	min-width: 50px;
+}
+
+tr.cal-week {
+	min-height: 50px;
+	max-height: 50px;
 }
 
 .center {

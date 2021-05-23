@@ -1,13 +1,6 @@
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+{% extends 'wodplannerapp/base.html' %}
 {% load static %}
-
-<link rel="stylesheet" type="text/css" href="{% static 'wodplannerapp/style.css' %}">
-
-
-
-<div id="app-content">
-    <div class="simple-container">
-        <a href="{% url 'wodplannerapp:index' %}"><img src="{% static 'wodplannerapp/images/carabao_logo.png' %}" alt="Carabao" width="256" height="154"></a>
+{% block content %}
 
         {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
         <h1><b>Datum:</b> {{ wod.pub_date|date:'M d, Y' }}</h1>
@@ -17,12 +10,14 @@
         <h2>Strength/Skill:</h2>
         <div>
 
+            <table>
             {% for choice in wod.strengthmovement_set.all %}
-                <div>
-                    <div class="sets-num">{{ choice.strength_sets_reps }}</div>
-                    <div class="mycontent6">{{ choice.strength_movement }}</div>
-                </div>
+                <tr>
+                    <td>{{ choice.strength_sets_reps }}</td>
+                    <td>{{ choice.strength_movement }}</td>
+                </tr>
             {% endfor %}
+            </table>
 
             {% if wod.strength_comment != "-" %}{{ wod.strength_comment }}{% endif %}
 
@@ -33,22 +28,24 @@
             {{ wod.wod_time_rounds }} {{ wod.wod_schema }}
             {% endif %}
 
+            <table>
             {% for choice in wod.wodmovement_set.all %}
-                <div>
-                    <div class="rounds-wod">{{ choice.wod_reps }}</div>
-                    <div class="mycontent6">{{ choice.wod_movement }}</div>
-                    <div class="mycontent7">{% ifnotequal choice.wod_weight "-" %}{{ choice.wod_weight }}{% endifnotequal %}</div>
-                </div>
+                <tr>
+                    <td>{{ choice.wod_reps }}</td>
+                    <td>{{ choice.wod_movement }}</td>
+                    <td>{% ifnotequal choice.wod_weight "-" %}{{ choice.wod_weight }}{% endifnotequal %}</td>
+                </tr>
             {% endfor %}
-
+            </table>
 
             {% if wod.wod_comment != "-" %}{{ wod.wod_comment }}{% endif %}
         </div>
+
         <div>
-            <a href="{% url 'wodplannerapp:wodoverview' %}" class="button">Zurück</a>
+            <a href="{% url 'wodplannerapp:dayview' wod.pub_date|date:'Y' wod.pub_date|date:'m' wod.pub_date|date:'d' %}" class="button">Zurück</a>
         </div>
-    </div>
-</div>
+
+{% endblock %}
 
 
 

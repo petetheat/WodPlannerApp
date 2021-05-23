@@ -23,13 +23,13 @@ class Calendar(HTMLCalendar):
 
         if day != 0:
             return f"<td class='{WEEK_DAY_DICT[weekday].lower()}'><span class='date'>{day}</span><br>{d}</td>"
-        return '<td></td>'
+        return '<td class="empty-day"></td>'
 
     def formatweek(self, year, month, theweek, events):
         week = ''
         for d, weekday in theweek:
             week += self.formatday(year, month, d, weekday, events)
-        return f'<tr> {week} </tr>'
+        return f'<tr class="cal-week"> {week} </tr>'
 
     def formatmonth(self, year, month, withyear=True):
         events = Wod.objects.filter(pub_date__year=year, pub_date__month=month)
