@@ -263,6 +263,11 @@ input {
 	font-size: 16px;
 }
 
+#id_username, #id_email, #id_password1, #id_password2, #id_password {
+	width: 130px;
+}
+
+
 #id_strength_comment {
 	width: 100%;
 }
