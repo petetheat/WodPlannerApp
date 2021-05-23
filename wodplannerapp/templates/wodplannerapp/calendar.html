@@ -2,8 +2,13 @@
 {% load static %}
 {% block content %}
 
-    <a href="{% url 'wodplannerapp:calendar' year_prev month_prev%}">prev</a>
-    <a href="{% url 'wodplannerapp:calendar' year_next month_next%}">next</a>
+    <p style="text-align:left;">
+    <a href="{% url 'wodplannerapp:calendar' year_prev month_prev%}"><img src="{% static 'wodplannerapp/images/prev.png' %}" alt="Zurück" width="16" height="16" id="prev-month"></a>
+    <span style="float:right;">
+        <a href="{% url 'wodplannerapp:calendar' year_next month_next%}"><img src="{% static 'wodplannerapp/images/next.png' %}" alt="Vor" width="16" height="16" id="next-month"></a>
+    </span>
+    </p>
+
     {{ calendar|safe }}
 
 {% endblock %}

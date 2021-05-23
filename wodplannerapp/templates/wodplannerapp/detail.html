@@ -7,6 +7,8 @@
 
         <h2>{{ wod.track }}</h2>
 
+        <hr>
+
         <h2>Strength/Skill:</h2>
         <div>
 
@@ -20,6 +22,8 @@
             </table>
 
             {% if wod.strength_comment != "-" %}{{ wod.strength_comment }}{% endif %}
+
+            <hr>
 
             <h2>WOD:</h2>
             {% if wod.wod_schema == "RFT Varying Reps" or wod.wod_schema == "Chipper" or wod.wod_schema == "FGB" or wod.wod_schema == "Death-by"%}
@@ -40,6 +44,8 @@
 
             {% if wod.wod_comment != "-" %}{{ wod.wod_comment }}{% endif %}
         </div>
+
+        <hr><br>
 
         <div>
             <a href="{% url 'wodplannerapp:dayview' wod.pub_date|date:'Y' wod.pub_date|date:'m' wod.pub_date|date:'d' %}" class="button">Zurück</a>
