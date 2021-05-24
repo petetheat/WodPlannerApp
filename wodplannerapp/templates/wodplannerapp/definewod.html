@@ -182,13 +182,13 @@
 <script>
   $( function() {
       $("#id_strengthmove-0-movement_name").autocomplete({
-      source: {% url 'wodplannerapp:definewod' schema_key %}
+      source: '{% url 'wodplannerapp:getmovements' %}'
     });
       $("#id_wodmove-0-wod_movement_name").autocomplete({
-      source: {% url 'wodplannerapp:definewod' schema_key %}
+      source: '{% url 'wodplannerapp:getmovements' %}'
     });
       $("#id_wodmove-1-wod_movement_name").autocomplete({
-      source: {% url 'wodplannerapp:definewod' schema_key %}
+      source: '{% url 'wodplannerapp:getmovements' %}'
     });
   } );
 </script>
@@ -219,32 +219,6 @@
     let setsNum = repsForm.length
     let movNum = repsMovement.length
     let wodNum = wodForm.length
-
-    var availableTags = [
-      "ActionScript",
-      "AppleScript",
-      "Asp",
-      "BASIC",
-      "C",
-      "C++",
-      "Clojure",
-      "COBOL",
-      "ColdFusion",
-      "Erlang",
-      "Fortran",
-      "Groovy",
-      "Haskell",
-      "Java",
-      "JavaScript",
-      "Lisp",
-      "Perl",
-      "PHP",
-      "Python",
-      "Ruby",
-      "Scala",
-      "Scheme"
-    ];
-
 
     addSetButton.addEventListener('click', addSet)
     addSetButton.addEventListener('mouseover',function(e){
@@ -304,7 +278,7 @@
         numberMovement.innerHTML = movNum.toString()
 
         $(`#id_strengthmove-${movNum-1}-movement_name`).autocomplete({
-      source: availableTags
+      source: '{% url 'wodplannerapp:getmovements' %}'
     });
     }
 
@@ -337,7 +311,7 @@
         numberWodMovement.innerHTML = wodNum.toString()
 
         $(`#id_wodmove-${wodNum-1}-wod_movement_name`).autocomplete({
-      source: availableTags
+      source: '{% url 'wodplannerapp:getmovements' %}'
     });
     }
 

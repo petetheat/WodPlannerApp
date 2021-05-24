@@ -103,14 +103,6 @@ def vote(request, question_id):
 def define_wod(request, schema_key):
     schema = get_object_or_404(Schemas, schema_key=schema_key)
 
-    if 'term' in request.GET:
-        print('yooooo')
-        qs = Movement.objects.filter(movement_name__icontains=request.GET.get('term'))
-        movement_list = []
-        for m in qs:
-            movement_list.append(m.movement_name)
-        return JsonResponse(movement_list, safe=False)
-
     if request.method == 'POST':
         if schema_key == 'amrap-repeat':
             form = WodFormTimeRepeat(request.POST)
@@ -249,3 +241,15 @@ def day_view(request, year, month, day):
 
     context_dict = {'wods': wods}
     return render(request, 'wodplannerapp/dayview.html', context_dict)
+
+
+@login_required
+def getmovements(request):
+
+    if 'term' in request.GET:
+        print('yooooo')
+        qs = Movement.objects.filter(movement_name__icontains=request.GET.get('term'))
+        movement_list = []
+        for m in qs:
+            movement_list.append(m.movement_name)
+        return JsonResponse(movement_list, safe=False)
