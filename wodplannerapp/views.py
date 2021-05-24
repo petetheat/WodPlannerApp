@@ -117,6 +117,10 @@ def define_wod(request, schema_key):
         form_reps = RepsFormSet(request.POST, prefix='reps')
         form_wod_movement = WodMovementFormSet(request.POST, prefix='wodmove')
 
+        print(form_strength.is_valid())
+        print(form.is_valid())
+        print(form_track.is_valid())
+
         if form_strength.is_valid() and form.is_valid() and form_track.is_valid():
             track_type = form_track.cleaned_data['track_type']
             track = Track.objects.get(track=track_type)
@@ -152,10 +156,13 @@ def define_wod(request, schema_key):
 
             for f in form_strength_movement:
                 if f.is_valid():
+                    print('yo')
                     for k in f.cleaned_data.keys():
                         sm = StrengthMovement(wod=wod, strength_movement=f.cleaned_data[k],
                                               strength_sets_reps=strength_sets_reps)
                         sm.save()
+                else:
+                    print('not valid')
 
             for f in form_wod_movement:
                 print(f.is_valid())

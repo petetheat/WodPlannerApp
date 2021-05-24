@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
 
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 <div id="app-content">
 <div class="simple-container">
@@ -171,6 +172,46 @@
 </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  $( function() {
+    var availableTags = [
+      "ActionScript",
+      "AppleScript",
+      "Asp",
+      "BASIC",
+      "C",
+      "C++",
+      "Clojure",
+      "COBOL",
+      "ColdFusion",
+      "Erlang",
+      "Fortran",
+      "Groovy",
+      "Haskell",
+      "Java",
+      "JavaScript",
+      "Lisp",
+      "Perl",
+      "PHP",
+      "Python",
+      "Ruby",
+      "Scala",
+      "Scheme"
+    ];
+      $("#id_strengthmove-0-movement_name").autocomplete({
+      source: availableTags
+    });
+      $("#id_wodmove-0-wod_movement_name").autocomplete({
+      source: availableTags
+    });
+      $("#id_wodmove-1-wod_movement_name").autocomplete({
+      source: availableTags
+    });
+  } );
+</script>
+
 <script>
     let container = document.querySelector("#form-container")
     let addSetButton = document.querySelector("#add-set")
@@ -197,6 +238,31 @@
     let setsNum = repsForm.length
     let movNum = repsMovement.length
     let wodNum = wodForm.length
+
+    var availableTags = [
+      "ActionScript",
+      "AppleScript",
+      "Asp",
+      "BASIC",
+      "C",
+      "C++",
+      "Clojure",
+      "COBOL",
+      "ColdFusion",
+      "Erlang",
+      "Fortran",
+      "Groovy",
+      "Haskell",
+      "Java",
+      "JavaScript",
+      "Lisp",
+      "Perl",
+      "PHP",
+      "Python",
+      "Ruby",
+      "Scala",
+      "Scheme"
+    ];
 
 
     addSetButton.addEventListener('click', addSet)
@@ -255,6 +321,10 @@
 
         container.insertBefore(newMoveForm, moveIdentifier)
         numberMovement.innerHTML = movNum.toString()
+
+        $(`#id_strengthmove-${movNum-1}-movement_name`).autocomplete({
+      source: availableTags
+    });
     }
 
     function removeMovement(e) {
@@ -284,6 +354,10 @@
 
         container.insertBefore(newMoveForm, wodIdentifier)
         numberWodMovement.innerHTML = wodNum.toString()
+
+        $(`#id_wodmove-${wodNum-1}-wod_movement_name`).autocomplete({
+      source: availableTags
+    });
     }
 
     function removeWodMovement(e) {
