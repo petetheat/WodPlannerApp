@@ -175,39 +175,20 @@
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
+    $( "#id_date" ).datepicker({
+  dateFormat: "dd/mm/yy"
+});
+</script>
+<script>
   $( function() {
-    var availableTags = [
-      "ActionScript",
-      "AppleScript",
-      "Asp",
-      "BASIC",
-      "C",
-      "C++",
-      "Clojure",
-      "COBOL",
-      "ColdFusion",
-      "Erlang",
-      "Fortran",
-      "Groovy",
-      "Haskell",
-      "Java",
-      "JavaScript",
-      "Lisp",
-      "Perl",
-      "PHP",
-      "Python",
-      "Ruby",
-      "Scala",
-      "Scheme"
-    ];
       $("#id_strengthmove-0-movement_name").autocomplete({
-      source: availableTags
+      source: {% url 'wodplannerapp:definewod' schema_key %}
     });
       $("#id_wodmove-0-wod_movement_name").autocomplete({
-      source: availableTags
+      source: {% url 'wodplannerapp:definewod' schema_key %}
     });
       $("#id_wodmove-1-wod_movement_name").autocomplete({
-      source: availableTags
+      source: {% url 'wodplannerapp:definewod' schema_key %}
     });
   } );
 </script>

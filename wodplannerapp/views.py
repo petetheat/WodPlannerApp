@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 from .models import *
 from django.http import Http404
@@ -103,6 +103,14 @@ def vote(request, question_id):
 def define_wod(request, schema_key):
     schema = get_object_or_404(Schemas, schema_key=schema_key)
 
+    if 'term' in request.GET:
+        print('yooooo')
+        qs = Movement.objects.filter(movement_name__icontains=request.GET.get('term'))
+        movement_list = []
+        for m in qs:
+            movement_list.append(m.movement_name)
+        return JsonResponse(movement_list, safe=False)
+
     if request.method == 'POST':
         if schema_key == 'amrap-repeat':
             form = WodFormTimeRepeat(request.POST)
@@ -156,17 +164,14 @@ def define_wod(request, schema_key):
 
             for f in form_strength_movement:
                 if f.is_valid():
-                    print('yo')
                     for k in f.cleaned_data.keys():
                         sm = StrengthMovement(wod=wod, strength_movement=f.cleaned_data[k],
                                               strength_sets_reps=strength_sets_reps)
                         sm.save()
-                else:
-                    print('not valid')
 
             for f in form_wod_movement:
-                print(f.is_valid())
                 if f.is_valid():
+                    print(f.cleaned_data.keys())
                     if f.cleaned_data['wod_reps'] is None:
                         wod_reps = ''
                     else:
