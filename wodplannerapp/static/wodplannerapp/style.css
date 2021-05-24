@@ -267,6 +267,19 @@ input {
 	width: 130px;
 }
 
+#id_strengthmove-0-movement_name, #id_strengthmove-1-movement_name, #id_strengthmove-2-movement_name,
+#id_strengthmove-3-movement_name, #id_strengthmove-4-movement_name, #id_strengthmove-5-movement_name,
+#id_strengthmove-6-movement_name, #id_strengthmove-7-movement_name {
+	width: 150px;
+}
+
+#id_wodmove-0-wod_movement_name, #id_wodmove-1-wod_movement_name, #id_wodmove-2-wod_movement_name, #id_wodmove-3-wod_movement_name,
+#id_wodmove-4-wod_movement_name, #id_wodmove-5-wod_movement_name, #id_wodmove-6-wod_movement_name,
+#id_wodmove-7-wod_movement_name, #id_wodmove-8-wod_movement_name, #id_wodmove-9-wod_movement_name,
+#id_wodmove-10-wod_movement_name, #id_wodmove-11-wod_movement_name, #id_wodmove-12-wod_movement_name {
+	width: 120px;
+}
+
 
 #id_strength_comment {
 	width: 100%;

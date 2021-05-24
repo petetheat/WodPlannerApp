@@ -14,16 +14,18 @@ INITIAL_SET_NUMBER = 5
 
 
 class MovementForm(forms.Form):
-    movement_name = forms.ModelChoiceField(queryset=Movement.objects.order_by('movement_name'), initial=0,
-                                           label='Übung')
+    # movement_name = forms.ModelChoiceField(queryset=Movement.objects.order_by('movement_name'), initial=0,
+    #                                        label='Übung')
+    movement_name = forms.CharField(label='Übung', max_length=200)
 
 
 MovementFormSet = forms.formset_factory(MovementForm, extra=1)
 
 
 class WodMovementForm(forms.Form):
-    wod_movement_name = forms.ModelChoiceField(queryset=Movement.objects.order_by('movement_name'), initial=0,
-                                               label='Übung')
+    # wod_movement_name = forms.ModelChoiceField(queryset=Movement.objects.order_by('movement_name'), initial=0,
+    #                                            label='Übung')
+    wod_movement_name = forms.CharField(label='Übung', max_length=200)
     # wod_reps = forms.IntegerField(label='Reps', min_value=1, required=False)
     wod_reps = forms.CharField(label='Reps', max_length=20, required=False)
     wod_weight_m = forms.IntegerField(label='Gewicht M', min_value=0, required=False)

@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import loader
 from .models import *
 from django.http import Http404
@@ -117,6 +117,10 @@ def define_wod(request, schema_key):
         form_reps = RepsFormSet(request.POST, prefix='reps')
         form_wod_movement = WodMovementFormSet(request.POST, prefix='wodmove')
 
+        print(form_strength.is_valid())
+        print(form.is_valid())
+        print(form_track.is_valid())
+
         if form_strength.is_valid() and form.is_valid() and form_track.is_valid():
             track_type = form_track.cleaned_data['track_type']
             track = Track.objects.get(track=track_type)
@@ -158,8 +162,8 @@ def define_wod(request, schema_key):
                         sm.save()
 
             for f in form_wod_movement:
-                print(f.is_valid())
                 if f.is_valid():
+                    print(f.cleaned_data.keys())
                     if f.cleaned_data['wod_reps'] is None:
                         wod_reps = ''
                     else:
@@ -237,3 +241,15 @@ def day_view(request, year, month, day):
 
     context_dict = {'wods': wods}
     return render(request, 'wodplannerapp/dayview.html', context_dict)
+
+
+@login_required
+def getmovements(request):
+
+    if 'term' in request.GET:
+        print('yooooo')
+        qs = Movement.objects.filter(movement_name__icontains=request.GET.get('term'))
+        movement_list = []
+        for m in qs:
+            movement_list.append(m.movement_name)
+        return JsonResponse(movement_list, safe=False)
