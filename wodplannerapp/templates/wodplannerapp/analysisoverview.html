@@ -7,7 +7,7 @@
     <table>
         {% for track in track_list %}
                 <tr>
-                    <td><a href="{% url 'wodplannerapp:analysis' track.id %}">{{ track.track }}</a></td>
+                    <td><a href="{% url 'wodplannerapp:analysis' track.id %}" class="button">{{ track.track }}</a></td>
                 </tr>
         {% endfor %}
     </table>

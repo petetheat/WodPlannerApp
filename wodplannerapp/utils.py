@@ -3,7 +3,7 @@ from calendar import HTMLCalendar
 
 import pandas as pd
 
-from .models import Wod
+from .models import Wod, WodMovement, StrengthMovement, Movement
 from django.urls import reverse
 from collections import Counter
 
@@ -47,11 +47,19 @@ class Calendar(HTMLCalendar):
 
 
 class AnalyzeWods:
-    def __init__(self, wod_moves, strength_moves):
-        self.wod = wod_moves
-        self.strength = strength_moves
+    def __init__(self, track_id):
+        wods = Wod.objects.filter(track=track_id)
+        movements = WodMovement.objects.filter(wod_id__in=[w.id for w in wods])
+        strength_movements = StrengthMovement.objects.filter(wod_id__in=[w.id for w in wods])
 
-        self.cm = pd.DataFrame(Counter(wod_moves), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
-        self.cs = pd.DataFrame(Counter(strength_moves), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
+        movement_list = [m.wod_movement for m in movements]
+        strength_movement_list = [m.strength_movement for m in strength_movements]
 
-        print(self.cs)
+        move_dict = {m['movement_name']: m['movement_type'] for m in Movement.objects.all().values()}
+        movement_type = [move_dict[m] for m in movement_list]
+
+        self.cm = pd.DataFrame(Counter(movement_list), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
+        self.cs = pd.DataFrame(Counter(strength_movement_list), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
+        self.mt = pd.DataFrame(Counter(movement_type), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
+        # self.mt = pd.DataFrame(mv.values())
+
