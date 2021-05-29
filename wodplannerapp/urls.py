@@ -14,5 +14,7 @@ urlpatterns = [
     path('success/', views.success, name='success'),
     path('calendar/<int:year>/<int:month>/', views.calendar_view, name='calendar'),
     path('dayview/<int:year>/<int:month>/<int:day>/', views.day_view, name='dayview'),
-    path('getmovements/', views.getmovements, name='getmovements')
+    path('getmovements/', views.getmovements, name='getmovements'),
+    path('analysis/', views.AnalysisOverView.as_view(), name='analysisoverview'),
+    path('analysis/<int:track_id>/', views.analysis, name='analysis')
 ]

@@ -8,11 +8,18 @@ from django.views import generic
 from .forms import *
 from itertools import groupby
 
+from plotly.offline import plot
+from plotly.graph_objs import Scatter, Bar, Layout
+import pandas as pd
+
 import datetime
 import calendar
-from .utils import Calendar
+from .utils import Calendar, AnalyzeWods
 
 from django.contrib.auth.decorators import login_required
+
+
+pd.options.plotting.backend = "plotly"
 
 
 def all_equal(iterable):
@@ -253,3 +260,58 @@ def getmovements(request):
         for m in qs:
             movement_list.append(m.movement_name)
         return JsonResponse(movement_list, safe=False)
+
+
+class AnalysisOverView(generic.ListView):
+    template_name = 'wodplannerapp/analysisoverview.html'
+    context_object_name = 'track_list'
+
+    def get_queryset(self):
+        return Track.objects.all()
+
+
+@login_required
+def analysis(request, track_id):
+    wods = Wod.objects.filter(track=track_id)
+    template_name = 'wodplannerapp/analysis.html'
+
+    movements = WodMovement.objects.filter(wod_id__in=[w.id for w in wods])
+    strength_movements = StrengthMovement.objects.filter(wod_id__in=[w.id for w in wods])
+
+    movement_list = [m.wod_movement for m in movements]
+    strength_movement_list = [m.strength_movement for m in strength_movements]
+
+    wod_analyzer = AnalyzeWods(movement_list, strength_movement_list)
+
+    # plot_div = plot([Bar(x=list(wod_analyzer.cm.values()), y=list(wod_analyzer.cm.keys()),
+    #                      orientation='h')],
+    #                 output_type='div',
+    #                 include_plotlyjs=False)
+
+    layout = Layout(
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+    y_ax = dict(showgrid=False, color='#aaa')
+    x_ax = dict(showgrid=False, color='#aaa')
+
+    fig = wod_analyzer.cm.plot.barh()
+    fig.update_layout(title_font_size=30, paper_bgcolor='rgba(200,0,0,0)',
+                      plot_bgcolor='rgba(0,0,0,0)', yaxis=y_ax, xaxis=x_ax, showlegend=False,
+                      xaxis_title="Anzahl",
+                      yaxis_title="Bewegung")
+    fig.update_traces(marker_color='green')
+    plot_div1 = plot(fig, output_type='div', include_plotlyjs=False)
+
+    fig2 = wod_analyzer.cs.plot.barh()
+    fig2.update_layout(title_font_size=30, paper_bgcolor='rgba(200,0,0,0)',
+                       plot_bgcolor='rgba(0,0,0,0)', yaxis=y_ax, xaxis=x_ax, showlegend=False,
+                       xaxis_title="Anzahl",
+                       yaxis_title="Bewegung")
+    fig2.update_traces(marker_color='green')
+    plot_div2 = plot(fig2, output_type='div', include_plotlyjs=False)
+
+    context_dict = {'wods': wods, 'movements': movement_list, 'strength': strength_movement_list, 'plot_div': plot_div1,
+                    'plot_div_s': plot_div2}
+
+    return render(request, template_name, context_dict)

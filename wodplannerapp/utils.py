@@ -1,7 +1,11 @@
 import calendar
 from calendar import HTMLCalendar
+
+import pandas as pd
+
 from .models import Wod
 from django.urls import reverse
+from collections import Counter
 
 WEEK_DAY_DICT = dict(zip(range(7), calendar.day_abbr))
 
@@ -40,3 +44,14 @@ class Calendar(HTMLCalendar):
         for week in self.monthdays2calendar(year, month):
             cal += f'{self.formatweek(year, month, week, events)}\n'
         return cal
+
+
+class AnalyzeWods:
+    def __init__(self, wod_moves, strength_moves):
+        self.wod = wod_moves
+        self.strength = strength_moves
+
+        self.cm = pd.DataFrame(Counter(wod_moves), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
+        self.cs = pd.DataFrame(Counter(strength_moves), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
+
+        print(self.cs)

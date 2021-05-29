@@ -1,0 +1,15 @@
+{% extends 'wodplannerapp/base.html' %}
+{% load static %}
+{% block content %}
+
+    <h1>Verfügbare Tracks:</h1>
+
+    <table>
+        {% for track in track_list %}
+                <tr>
+                    <td><a href="{% url 'wodplannerapp:analysis' track.id %}">{{ track.track }}</a></td>
+                </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}
