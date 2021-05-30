@@ -287,7 +287,7 @@ def analysis(request, track_id):
         plot_bgcolor='rgba(0,0,0,0)'
     )
     y_ax = dict(showgrid=False, color='#aaa')
-    x_ax = dict(showgrid=False, color='#aaa')
+    x_ax = dict(showgrid=False, color='#aaa', scaleanchor='x')
 
     fig = wod_analyzer.cm.plot.barh()
     fig.update_layout(title_font_size=30, paper_bgcolor='rgba(200,0,0,0)',
@@ -295,6 +295,7 @@ def analysis(request, track_id):
                       xaxis_title="Anzahl",
                       yaxis_title="Bewegung")
     fig.update_traces(marker_color='green')
+    fig.update_xaxes(fixedrange=True)
     plot_div1 = plot(fig, output_type='div', include_plotlyjs=False)
 
     fig2 = wod_analyzer.cs.plot.barh()
@@ -303,6 +304,7 @@ def analysis(request, track_id):
                        xaxis_title="Anzahl",
                        yaxis_title="Bewegung")
     fig2.update_traces(marker_color='green')
+    fig2.update_xaxes(fixedrange=True)
     plot_div2 = plot(fig2, output_type='div', include_plotlyjs=False)
 
     fig = px.bar(wod_analyzer.mt,
@@ -316,8 +318,22 @@ def analysis(request, track_id):
     fig.update_layout(barmode='stack')
     plot_div3 = plot(fig, output_type='div', include_plotlyjs=False)
 
+    fig = px.imshow(wod_analyzer.heatmap)
+    fig.update_layout(title_font_size=30, paper_bgcolor='rgba(200,0,0,0)',
+                      plot_bgcolor='rgba(0,0,0,0)', yaxis=y_ax, xaxis=x_ax, showlegend=False,
+                      xaxis_title="Workouts",
+                      yaxis_title="Bewegungen",
+                      margin=dict(l=5, r=5, t=5, b=5))
+    fig.update_traces(dict(showscale=False,
+                           coloraxis=None), selector={'type': 'heatmap'})
+    fig.update_xaxes(fixedrange=True)
+    # fig.update_yaxes(fixedrange=True)
+    print(fig)
+    plot_div4 = plot(fig, output_type='div', include_plotlyjs=False)
+
     context_dict = {'plot_div': plot_div1,
                     'plot_div_s': plot_div2,
-                    'plot_div_mt': plot_div3}
+                    'plot_div_mt': plot_div3,
+                    'plot_div_test': plot_div4}
 
     return render(request, template_name, context_dict)

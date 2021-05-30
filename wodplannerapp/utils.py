@@ -2,12 +2,26 @@ import calendar
 from calendar import HTMLCalendar
 
 import pandas as pd
+import numpy as np
 
 from .models import Wod, WodMovement, StrengthMovement, Movement
 from django.urls import reverse
 from collections import Counter
 
 WEEK_DAY_DICT = dict(zip(range(7), calendar.day_abbr))
+
+
+def _get_wod_dataframe(df_wod, df_movement):
+    wod_id = df_wod['wod_id'].unique()[0]
+    df_grouped = df_wod.groupby('wod_movement').wod_id.nunique()
+    # df_movement.rename(columns={'movement_name': 'wod_movement'}, inplace=True)
+    # df_movement.set_index('wod_movement', inplace=True)
+
+    df_new = df_movement.join(df_grouped)
+    df_new.fillna(0, inplace=True)
+    df_new.rename(columns={'wod_id': 'WOD%d' % wod_id}, inplace=True)
+
+    return df_new['WOD%d' % wod_id]
 
 
 class Calendar(HTMLCalendar):
@@ -58,8 +72,24 @@ class AnalyzeWods:
         move_dict = {m['movement_name']: m['movement_type'] for m in Movement.objects.all().values()}
         movement_type = [move_dict[m] for m in movement_list]
 
+        wod_names = ['WOD%d' % w.id for w in wods]
+        wod_ids = [w.id for w in wods]
+
+        df_movement = pd.DataFrame(Movement.objects.all().values())
+        df_movement.rename(columns={'movement_name': 'wod_movement'}, inplace=True)
+        df_movement.set_index('wod_movement', inplace=True)
+        df_wods = pd.DataFrame(movements.values())[['wod_id', 'wod_movement']]
+
+        df_list = []
+        for wid in wod_ids:
+            df_tmp = df_wods.loc[df_wods['wod_id'] == wid]
+            df_list.append(_get_wod_dataframe(df_tmp, df_movement))
+
         self.cm = pd.DataFrame(Counter(movement_list), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
         self.cs = pd.DataFrame(Counter(strength_movement_list), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
         self.mt = pd.DataFrame(Counter(movement_type), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
         # self.mt = pd.DataFrame(mv.values())
 
+        # self.test = pd.DataFrame(np.random.randint(0, 8, (len(movement_list), len(wods))),
+        #                          columns=wod_names, index=movement_list).sort_index()
+        self.heatmap = pd.concat(df_list, axis=1).sort_index()
