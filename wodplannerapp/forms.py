@@ -28,8 +28,10 @@ class WodMovementForm(forms.Form):
     wod_movement_name = forms.CharField(label='Übung', max_length=200)
     # wod_reps = forms.IntegerField(label='Reps', min_value=1, required=False)
     wod_reps = forms.CharField(label='Reps', max_length=20, required=False)
-    wod_weight_m = forms.IntegerField(label='Gewicht M', min_value=0, required=False)
-    wod_weight_f = forms.IntegerField(label='Gewicht W', min_value=0, required=False)
+    # wod_weight_m = forms.IntegerField(label='Gewicht M', min_value=0, required=False)
+    # wod_weight_f = forms.IntegerField(label='Gewicht W', min_value=0, required=False)
+    wod_weight_m = forms.CharField(label='Gewicht M', max_length=200, required=False)
+    wod_weight_f = forms.CharField(label='Gewicht W', max_length=200, required=False)
 
 
 WodMovementFormSet = forms.formset_factory(WodMovementForm, extra=2)

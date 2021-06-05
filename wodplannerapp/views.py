@@ -123,11 +123,10 @@ def define_wod(request, schema_key):
         form_strength = StrengthForm(request.POST)
         form_strength_movement = MovementFormSet(request.POST, prefix='strengthmove')
         form_reps = RepsFormSet(request.POST, prefix='reps')
-        form_wod_movement = WodMovementFormSet(request.POST, prefix='wodmove')
-
-        print(form_strength.is_valid())
-        print(form.is_valid())
-        print(form_track.is_valid())
+        form_wod_movement = WodMovementFormSet(request.POST, prefix='wodmove', initial=[{'wod_weight_m': '20',
+                                                                                         'wod_weight_f': '16'},
+                                                                                        {'wod_weight_m': '20',
+                                                                                         'wod_weight_f': '16'}])
 
         if form_strength.is_valid() and form.is_valid() and form_track.is_valid():
             track_type = form_track.cleaned_data['track_type']
@@ -169,6 +168,7 @@ def define_wod(request, schema_key):
                                               strength_sets_reps=strength_sets_reps)
                         sm.save()
 
+            print(len(form_wod_movement))
             for f in form_wod_movement:
                 if f.is_valid():
                     print(f.cleaned_data.keys())
@@ -195,6 +195,8 @@ def define_wod(request, schema_key):
                     wm = WodMovement(wod=wod, wod_movement=f.cleaned_data['wod_movement_name'],
                                      wod_reps=wod_reps, wod_weight=weight)
                     wm.save()
+                else:
+                    print(f.errors)
             # redirect to a new URL:
             return HttpResponseRedirect('/wodplannerapp/success/')
 
@@ -255,7 +257,6 @@ def day_view(request, year, month, day):
 def getmovements(request):
 
     if 'term' in request.GET:
-        print('yooooo')
         qs = Movement.objects.filter(movement_name__icontains=request.GET.get('term'))
         movement_list = []
         for m in qs:
