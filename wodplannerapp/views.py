@@ -41,12 +41,15 @@ def next_month(t):
 
 @login_required
 def index_view(request):
+    username = None
+    if request.user.is_authenticated:
+        username = request.user.username
     t_now = datetime.datetime.now()
     year = t_now.year
     month = t_now.month
     template_name = 'wodplannerapp/index.html'
 
-    return render(request, template_name, {'year': year, 'month': month})
+    return render(request, template_name, {'year': year, 'month': month, 'user': username})
 
 
 @login_required
