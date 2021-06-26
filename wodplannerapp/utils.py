@@ -13,15 +13,16 @@ WEEK_DAY_DICT = dict(zip(range(7), calendar.day_abbr))
 
 def _get_wod_dataframe(df_wod, df_movement):
     wod_id = df_wod['wod_id'].unique()[0]
+    wod_date = df_wod['wod_dates'].unique()[0]
     df_grouped = df_wod.groupby('wod_movement').wod_id.nunique()
     # df_movement.rename(columns={'movement_name': 'wod_movement'}, inplace=True)
     # df_movement.set_index('wod_movement', inplace=True)
 
     df_new = df_movement.join(df_grouped)
     df_new.fillna(0, inplace=True)
-    df_new.rename(columns={'wod_id': 'WOD%d' % wod_id}, inplace=True)
+    df_new.rename(columns={'wod_id': wod_date}, inplace=True)
 
-    return df_new['WOD%d' % wod_id]
+    return df_new[wod_date]
 
 
 class Calendar(HTMLCalendar):
@@ -74,11 +75,14 @@ class AnalyzeWods:
 
         wod_names = ['WOD%d' % w.id for w in wods]
         wod_ids = [w.id for w in wods]
+        dates = [w.pub_date.strftime("%d/%m/%Y") for w in wods]
 
         df_movement = pd.DataFrame(Movement.objects.all().values())
         df_movement.rename(columns={'movement_name': 'wod_movement'}, inplace=True)
         df_movement.set_index('wod_movement', inplace=True)
         df_wods = pd.DataFrame(movements.values())[['wod_id', 'wod_movement']]
+        df_date = pd.DataFrame({'wod_id': wod_ids, 'wod_dates': pd.to_datetime(dates, dayfirst=True)})
+        df_wods = df_wods.set_index('wod_id').join(df_date.set_index('wod_id')).reset_index()
 
         df_list = []
         for wid in wod_ids:
@@ -93,3 +97,5 @@ class AnalyzeWods:
         # self.test = pd.DataFrame(np.random.randint(0, 8, (len(movement_list), len(wods))),
         #                          columns=wod_names, index=movement_list).sort_index()
         self.heatmap = pd.concat(df_list, axis=1).sort_index()
+        self.heatmap = self.heatmap.T.sort_index().T
+        self.heatmap.columns = self.heatmap.columns.strftime('%d-%m-%Y')
