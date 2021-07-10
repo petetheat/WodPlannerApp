@@ -281,15 +281,6 @@ def analysis(request, track_id):
 
     wod_analyzer = AnalyzeWods(track_id)
 
-    # plot_div = plot([Bar(x=list(wod_analyzer.cm.values()), y=list(wod_analyzer.cm.keys()),
-    #                      orientation='h')],
-    #                 output_type='div',
-    #                 include_plotlyjs=False)
-
-    layout = Layout(
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)'
-    )
     y_ax = dict(showgrid=False, color='#aaa')
     x_ax = dict(showgrid=False, color='#aaa', scaleanchor='x')
 
