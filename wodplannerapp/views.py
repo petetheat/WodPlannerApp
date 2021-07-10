@@ -8,11 +8,19 @@ from django.views import generic
 from .forms import *
 from itertools import groupby
 
+from plotly.offline import plot
+from plotly.graph_objs import Scatter, Bar, Layout
+import plotly.express as px
+import pandas as pd
+
 import datetime
 import calendar
-from .utils import Calendar
+from .utils import Calendar, AnalyzeWods
 
 from django.contrib.auth.decorators import login_required
+
+
+pd.options.plotting.backend = "plotly"
 
 
 def all_equal(iterable):
@@ -33,12 +41,15 @@ def next_month(t):
 
 @login_required
 def index_view(request):
+    username = None
+    if request.user.is_authenticated:
+        username = request.user.username
     t_now = datetime.datetime.now()
     year = t_now.year
     month = t_now.month
     template_name = 'wodplannerapp/index.html'
 
-    return render(request, template_name, {'year': year, 'month': month})
+    return render(request, template_name, {'year': year, 'month': month, 'user': username})
 
 
 @login_required
@@ -115,11 +126,10 @@ def define_wod(request, schema_key):
         form_strength = StrengthForm(request.POST)
         form_strength_movement = MovementFormSet(request.POST, prefix='strengthmove')
         form_reps = RepsFormSet(request.POST, prefix='reps')
-        form_wod_movement = WodMovementFormSet(request.POST, prefix='wodmove')
-
-        print(form_strength.is_valid())
-        print(form.is_valid())
-        print(form_track.is_valid())
+        form_wod_movement = WodMovementFormSet(request.POST, prefix='wodmove', initial=[{'wod_weight_m': '20',
+                                                                                         'wod_weight_f': '16'},
+                                                                                        {'wod_weight_m': '20',
+                                                                                         'wod_weight_f': '16'}])
 
         if form_strength.is_valid() and form.is_valid() and form_track.is_valid():
             track_type = form_track.cleaned_data['track_type']
@@ -161,6 +171,7 @@ def define_wod(request, schema_key):
                                               strength_sets_reps=strength_sets_reps)
                         sm.save()
 
+            print(len(form_wod_movement))
             for f in form_wod_movement:
                 if f.is_valid():
                     print(f.cleaned_data.keys())
@@ -187,6 +198,8 @@ def define_wod(request, schema_key):
                     wm = WodMovement(wod=wod, wod_movement=f.cleaned_data['wod_movement_name'],
                                      wod_reps=wod_reps, wod_weight=weight)
                     wm.save()
+                else:
+                    print(f.errors)
             # redirect to a new URL:
             return HttpResponseRedirect('/wodplannerapp/success/')
 
@@ -247,9 +260,75 @@ def day_view(request, year, month, day):
 def getmovements(request):
 
     if 'term' in request.GET:
-        print('yooooo')
         qs = Movement.objects.filter(movement_name__icontains=request.GET.get('term'))
         movement_list = []
         for m in qs:
             movement_list.append(m.movement_name)
         return JsonResponse(movement_list, safe=False)
+
+
+class AnalysisOverView(generic.ListView):
+    template_name = 'wodplannerapp/analysisoverview.html'
+    context_object_name = 'track_list'
+
+    def get_queryset(self):
+        return Track.objects.all()
+
+
+@login_required
+def analysis(request, track_id):
+    template_name = 'wodplannerapp/analysis.html'
+
+    wod_analyzer = AnalyzeWods(track_id)
+
+    y_ax = dict(showgrid=False, color='#aaa')
+    x_ax = dict(showgrid=False, color='#aaa', scaleanchor='x')
+
+    fig = wod_analyzer.cm.plot.barh()
+    fig.update_layout(title_font_size=30, paper_bgcolor='rgba(200,0,0,0)',
+                      plot_bgcolor='rgba(0,0,0,0)', yaxis=y_ax, xaxis=x_ax, showlegend=False,
+                      xaxis_title="Anzahl",
+                      yaxis_title="Bewegung")
+    fig.update_traces(marker_color='green')
+    fig.update_xaxes(fixedrange=True)
+    plot_div1 = plot(fig, output_type='div', include_plotlyjs=False)
+
+    fig2 = wod_analyzer.cs.plot.barh()
+    fig2.update_layout(title_font_size=30, paper_bgcolor='rgba(200,0,0,0)',
+                       plot_bgcolor='rgba(0,0,0,0)', yaxis=y_ax, xaxis=x_ax, showlegend=False,
+                       xaxis_title="Anzahl",
+                       yaxis_title="Bewegung")
+    fig2.update_traces(marker_color='green')
+    fig2.update_xaxes(fixedrange=True)
+    plot_div2 = plot(fig2, output_type='div', include_plotlyjs=False)
+
+    fig = px.bar(wod_analyzer.mt,
+                 x=[c for c in wod_analyzer.mt.columns],
+                 y=wod_analyzer.mt.index)
+    fig.update_layout(title_font_size=30, paper_bgcolor='rgba(200,0,0,0)',
+                      plot_bgcolor='rgba(0,0,0,0)', yaxis=y_ax, xaxis=x_ax, showlegend=False,
+                      xaxis_title="Anzahl",
+                      yaxis_title="Bewegungsart")
+    fig.update_traces(marker_color='green')
+    fig.update_layout(barmode='stack')
+    plot_div3 = plot(fig, output_type='div', include_plotlyjs=False)
+
+    fig = px.imshow(wod_analyzer.heatmap)
+    fig.update_layout(title_font_size=30, paper_bgcolor='rgba(200,0,0,0)',
+                      plot_bgcolor='rgba(0,0,0,0)', yaxis=y_ax, xaxis=x_ax, showlegend=False,
+                      xaxis_title="Workouts",
+                      yaxis_title="Bewegungen",
+                      margin=dict(l=5, r=5, t=5, b=5))
+    fig.update_traces(dict(showscale=False,
+                           coloraxis=None), selector={'type': 'heatmap'})
+    fig.update_xaxes(fixedrange=True)
+    # fig.update_yaxes(fixedrange=True)
+    print(fig)
+    plot_div4 = plot(fig, output_type='div', include_plotlyjs=False)
+
+    context_dict = {'plot_div': plot_div1,
+                    'plot_div_s': plot_div2,
+                    'plot_div_mt': plot_div3,
+                    'plot_div_test': plot_div4}
+
+    return render(request, template_name, context_dict)

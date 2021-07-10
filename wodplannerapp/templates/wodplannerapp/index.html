@@ -2,24 +2,23 @@
 {% load static %}
 {% block content %}
 
-        <h1>WOD Planner</h1>
+        <h1>WOD Planner ({{ user }})</h1>
 
         <table>
             <tr>
-                <td><a href="{% url 'wodplannerapp:calendar' year month %}"><img src="{% static 'wodplannerapp/images/icons8-kalender-96.png' %}" alt="Create new WOD" width="64" height="64"></a></td>
-                <td>WODs anzeigen</td>
+                <td><a href="{% url 'wodplannerapp:calendar' year month %}"><img src="{% static 'wodplannerapp/images/icons8-kalender-96.png' %}" alt="Create new WOD" width="160" height="80"></a></td>
             </tr>
             <tr>
-                <td><a href="{% url 'wodplannerapp:create' %}"><img src="{% static 'wodplannerapp/images/icons8-gewichtheben-64.png' %}" alt="Create new WOD" width="64" height="64"></a></td>
-                <td>Neue WODs erstellen</td>
+                <td><a href="{% url 'wodplannerapp:create' %}"><img src="{% static 'wodplannerapp/images/icons8-gewichtheben-64.png' %}" alt="Create new WOD" width="160" height="80"></a></td>
             </tr>
             <tr>
-                <td><img src="{% static 'wodplannerapp/images/icons8-einstellungen-100.png' %}" alt="Settings" width="64" height="64"></td>
-                <td>Einstellungen</td>
+                <td><a href="{% url 'wodplannerapp:analysisoverview' %}"><img src="{% static 'wodplannerapp/images/analytics.png' %}" alt="Settings" width="160" height="80"></a></td>
             </tr>
             <tr>
-                <td><a href="{% url 'logout' %}"><img src="{% static 'wodplannerapp/images/logout.png' %}" alt="Settings" width="32" height="32"></a></td>
-                <td>Log out</td>
+                <td><img src="{% static 'wodplannerapp/images/icons8-einstellungen-100.png' %}" alt="Settings" width="160" height="80"></td>
+            </tr>
+            <tr>
+                <td><a href="{% url 'logout' %}"><img src="{% static 'wodplannerapp/images/logout.png' %}" alt="Settings" width="160" height="80"></a></td>
             </tr>
          </table>
 

@@ -1,0 +1,27 @@
+{% extends 'wodplannerapp/base.html' %}
+{% load static %}
+{% block content %}
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <h1>WOD Movements:</h1>
+
+    {% autoescape off %}
+        {{ plot_div }}
+    {% endautoescape %}
+
+    {% autoescape off %}
+        {{ plot_div_mt }}
+    {% endautoescape %}
+
+    {% autoescape off %}
+        {{ plot_div_test }}
+    {% endautoescape %}
+
+    <h1>Strength Movements:</h1>
+
+    {% autoescape off %}
+        {{ plot_div_s }}
+    {% endautoescape %}
+
+{% endblock %}

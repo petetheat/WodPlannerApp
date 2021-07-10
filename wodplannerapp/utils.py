@@ -1,9 +1,28 @@
 import calendar
 from calendar import HTMLCalendar
-from .models import Wod
+
+import pandas as pd
+import numpy as np
+
+from .models import Wod, WodMovement, StrengthMovement, Movement
 from django.urls import reverse
+from collections import Counter
 
 WEEK_DAY_DICT = dict(zip(range(7), calendar.day_abbr))
+
+
+def _get_wod_dataframe(df_wod, df_movement):
+    wod_id = df_wod['wod_id'].unique()[0]
+    wod_date = df_wod['wod_dates'].unique()[0]
+    df_grouped = df_wod.groupby('wod_movement').wod_id.nunique()
+    # df_movement.rename(columns={'movement_name': 'wod_movement'}, inplace=True)
+    # df_movement.set_index('wod_movement', inplace=True)
+
+    df_new = df_movement.join(df_grouped)
+    df_new.fillna(0, inplace=True)
+    df_new.rename(columns={'wod_id': wod_date}, inplace=True)
+
+    return df_new[wod_date]
 
 
 class Calendar(HTMLCalendar):
@@ -40,3 +59,43 @@ class Calendar(HTMLCalendar):
         for week in self.monthdays2calendar(year, month):
             cal += f'{self.formatweek(year, month, week, events)}\n'
         return cal
+
+
+class AnalyzeWods:
+    def __init__(self, track_id):
+        wods = Wod.objects.filter(track=track_id)
+        movements = WodMovement.objects.filter(wod_id__in=[w.id for w in wods])
+        strength_movements = StrengthMovement.objects.filter(wod_id__in=[w.id for w in wods])
+
+        movement_list = [m.wod_movement for m in movements]
+        strength_movement_list = [m.strength_movement for m in strength_movements]
+
+        move_dict = {m['movement_name']: m['movement_type'] for m in Movement.objects.all().values()}
+        movement_type = [move_dict[m] for m in movement_list]
+
+        wod_names = ['WOD%d' % w.id for w in wods]
+        wod_ids = [w.id for w in wods]
+        dates = [w.pub_date.strftime("%d/%m/%Y") for w in wods]
+
+        df_movement = pd.DataFrame(Movement.objects.all().values())
+        df_movement.rename(columns={'movement_name': 'wod_movement'}, inplace=True)
+        df_movement.set_index('wod_movement', inplace=True)
+        df_wods = pd.DataFrame(movements.values())[['wod_id', 'wod_movement']]
+        df_date = pd.DataFrame({'wod_id': wod_ids, 'wod_dates': pd.to_datetime(dates, dayfirst=True)})
+        df_wods = df_wods.set_index('wod_id').join(df_date.set_index('wod_id')).reset_index()
+
+        df_list = []
+        for wid in wod_ids:
+            df_tmp = df_wods.loc[df_wods['wod_id'] == wid]
+            df_list.append(_get_wod_dataframe(df_tmp, df_movement))
+
+        self.cm = pd.DataFrame(Counter(movement_list), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
+        self.cs = pd.DataFrame(Counter(strength_movement_list), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
+        self.mt = pd.DataFrame(Counter(movement_type), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
+        # self.mt = pd.DataFrame(mv.values())
+
+        # self.test = pd.DataFrame(np.random.randint(0, 8, (len(movement_list), len(wods))),
+        #                          columns=wod_names, index=movement_list).sort_index()
+        self.heatmap = pd.concat(df_list, axis=1).sort_index()
+        self.heatmap = self.heatmap.T.sort_index().T
+        self.heatmap.columns = self.heatmap.columns.strftime('%d-%m-%Y')
