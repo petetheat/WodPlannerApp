@@ -9,6 +9,7 @@ from .forms import *
 from itertools import groupby
 
 from plotly.offline import plot
+import plotly.graph_objs as go
 from plotly.graph_objs import Scatter, Bar, Layout
 import plotly.express as px
 import pandas as pd
@@ -313,22 +314,73 @@ def analysis(request, track_id):
     fig.update_layout(barmode='stack')
     plot_div3 = plot(fig, output_type='div', include_plotlyjs=False)
 
-    fig = px.imshow(wod_analyzer.heatmap)
+    # fig = px.imshow(wod_analyzer.heatmap, color_continuous_scale='RdBu_r')
+    fig = go.Figure(data=go.Heatmap(z=wod_analyzer.heatmap.values,
+                                    x=wod_analyzer.heatmap.columns,
+                                    y=wod_analyzer.heatmap.index,
+                                    type='heatmap',
+                                    colorscale='YlOrRd'
+                                    ))
+    fig['layout']['yaxis']['autorange'] = "reversed"
+
     fig.update_layout(title_font_size=30, paper_bgcolor='rgba(200,0,0,0)',
                       plot_bgcolor='rgba(0,0,0,0)', yaxis=y_ax, xaxis=x_ax, showlegend=False,
-                      xaxis_title="Workouts",
-                      yaxis_title="Bewegungen",
+                      # xaxis_title="Workouts",
+                      # yaxis_title="Bewegungen",
                       margin=dict(l=5, r=5, t=5, b=5))
     fig.update_traces(dict(showscale=False,
                            coloraxis=None), selector={'type': 'heatmap'})
     fig.update_xaxes(fixedrange=True)
-    # fig.update_yaxes(fixedrange=True)
-    print(fig)
-    plot_div4 = plot(fig, output_type='div', include_plotlyjs=False)
+
+    plot_div_heatmap = plot(fig, output_type='div', include_plotlyjs=False)
+
+    moves = wod_analyzer.cm.index  # TODO: make this automatic
+    fig = go.Figure()
+
+    for m in moves[-10:]:
+        fig.add_trace(go.Scatter(x=wod_analyzer.timedata.index, y=wod_analyzer.timedata[m],
+                                 name=m))
+    fig.update_layout(title_font_size=30, paper_bgcolor='rgba(200,0,0,0)',
+                      plot_bgcolor='rgba(0,0,0,0)', yaxis=y_ax, xaxis=x_ax,
+                      # xaxis_title="Workouts",
+                      # yaxis_title="Bewegungen",
+                      margin=dict(l=5, r=5, t=5, b=5))
+
+    # buttons = []
+    # for m in wod_analyzer.cm.index:
+    #     buttons.append(dict(
+    #         args=["y", wod_analyzer.timedata[m]],
+    #         label=m,
+    #         method="restyle"
+    #     ))
+    #
+    # # Add dropdowns
+    # button_layer_1_height = 1.08
+    # fig.update_layout(
+    #     updatemenus=[
+    #         dict(
+    #             buttons=buttons,
+    #             direction="down",
+    #             pad={"r": 10, "t": 10},
+    #             showactive=True,
+    #             x=0.1,
+    #             xanchor="left",
+    #             y=button_layer_1_height,
+    #             yanchor="top"
+    #         )])
+    #
+    # fig.update_layout(
+    #     annotations=[
+    #         dict(text="Movement", x=0, xref="paper", y=1.06, yref="paper",
+    #              align="left", showarrow=False)
+    #     ])
+
+    plot_div_timedata = plot(fig, output_type='div', include_plotlyjs=False)
 
     context_dict = {'plot_div': plot_div1,
                     'plot_div_s': plot_div2,
                     'plot_div_mt': plot_div3,
-                    'plot_div_test': plot_div4}
+                    'plot_div_heatmap': plot_div_heatmap,
+                    'plot_div_timedata': plot_div_timedata}
 
     return render(request, template_name, context_dict)

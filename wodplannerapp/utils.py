@@ -89,13 +89,16 @@ class AnalyzeWods:
             df_tmp = df_wods.loc[df_wods['wod_id'] == wid]
             df_list.append(_get_wod_dataframe(df_tmp, df_movement))
 
-        self.cm = pd.DataFrame(Counter(movement_list), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
+        # self.cm = pd.DataFrame(Counter(movement_list), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
         self.cs = pd.DataFrame(Counter(strength_movement_list), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
         self.mt = pd.DataFrame(Counter(movement_type), index=['Anzahl']).T.sort_values(by='Anzahl', ascending=True)
-        # self.mt = pd.DataFrame(mv.values())
 
-        # self.test = pd.DataFrame(np.random.randint(0, 8, (len(movement_list), len(wods))),
-        #                          columns=wod_names, index=movement_list).sort_index()
         self.heatmap = pd.concat(df_list, axis=1).sort_index()
         self.heatmap = self.heatmap.T.sort_index().T
         self.heatmap.columns = self.heatmap.columns.strftime('%d-%m-%Y')
+
+        self.timedata = pd.concat(df_list, axis=1).sort_index()
+        self.timedata = self.timedata.T.sort_index()
+
+        self.cm = self.heatmap.sum(axis=1).sort_values(ascending=True)
+        self.cm = self.cm.loc[self.cm > 0]
