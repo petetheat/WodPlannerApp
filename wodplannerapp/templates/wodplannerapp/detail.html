@@ -26,10 +26,12 @@
             <hr>
 
             <h2>WOD:</h2>
-            {% if wod.wod_schema == "RFT Varying Reps" or wod.wod_schema == "Chipper" or wod.wod_schema == "FGB" or wod.wod_schema == "Death-by"%}
-            {{ wod.wod_schema }}
+            {% if wod.wod_schema == "RFT Varying Reps" or wod.wod_schema == "Chipper" or wod.wod_schema == "Death-by"%}
+                {{ wod.wod_schema }}
+            {% elif wod.wod_schema == "FGB" %}
+                {{ wod.wod_schema }}: {{ wod.wod_time_rounds }} rounds, 1min per station
             {% else %}
-            {{ wod.wod_time_rounds }} {{ wod.wod_schema }}
+                {{ wod.wod_time_rounds }} {{ wod.wod_schema }}
             {% endif %}
 
             <table>
