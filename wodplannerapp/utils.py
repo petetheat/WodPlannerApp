@@ -66,9 +66,18 @@ class AnalyzeWods:
         wods = Wod.objects.filter(track=track_id)
         movements = WodMovement.objects.filter(wod_id__in=[w.id for w in wods])
         strength_movements = StrengthMovement.objects.filter(wod_id__in=[w.id for w in wods])
+        id_list = [m.wod_id for m in movements]
 
         movement_list = [m.wod_movement for m in movements]
         strength_movement_list = [m.strength_movement for m in strength_movements]
+        list_dates = [wods.filter(id=idx)[0].pub_date for idx in id_list]
+
+        df_dates = pd.DataFrame({'Date': list_dates, 'Movement': movement_list}).sort_values(by=['Movement', 'Date'])
+        df_dates.drop_duplicates(subset=['Movement'], keep='last', inplace=True)
+        df_dates.sort_values(by='Date', ascending=True, inplace=True)
+        df_dates['Date_string'] = df_dates.apply(lambda x: x['Date'].strftime("%d/%m/%Y"), axis=1)
+
+        self.df_dates = df_dates
 
         move_dict = {m['movement_name']: m['movement_type'] for m in Movement.objects.all().values()}
         movement_type = [move_dict[m] for m in movement_list]
