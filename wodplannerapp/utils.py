@@ -63,6 +63,7 @@ class Calendar(HTMLCalendar):
 
 class AnalyzeWods:
     def __init__(self, track_id):
+        # Dataframe with WOD movements
         wods = Wod.objects.filter(track=track_id)
         movements = WodMovement.objects.filter(wod_id__in=[w.id for w in wods])
         strength_movements = StrengthMovement.objects.filter(wod_id__in=[w.id for w in wods])
@@ -78,6 +79,19 @@ class AnalyzeWods:
         df_dates['Date_string'] = df_dates.apply(lambda x: x['Date'].strftime("%d/%m/%Y"), axis=1)
 
         self.df_dates = df_dates
+
+        # Dataframe with strength movements
+        id_list_strength = [m.wod_id for m in strength_movements]
+        list_dates_strength = [wods.filter(id=idx)[0].pub_date for idx in id_list_strength]
+        strength_type_list = [wods.filter(id=idx)[0].strength_type for idx in id_list_strength]
+
+        df_strength = pd.DataFrame({'Date': list_dates_strength, 'Type': strength_type_list,
+                                    'Movement': strength_movement_list}).sort_values(by=['Type', 'Movement', 'Date'])
+        df_strength.drop_duplicates(subset=['Type', 'Movement'], keep='last', inplace=True)
+        df_strength.sort_values(by=['Type', 'Date'], ascending=True, inplace=True)
+        df_strength['Date_string'] = df_strength.apply(lambda x: x['Date'].strftime("%d/%m/%Y"), axis=1)
+
+        self.df_strength = df_strength
 
         move_dict = {m['movement_name']: m['movement_type'] for m in Movement.objects.all().values()}
         movement_type = [move_dict[m] for m in movement_list]
