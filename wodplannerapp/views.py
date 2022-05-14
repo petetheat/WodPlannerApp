@@ -340,10 +340,25 @@ def analysis(request, track_id):
                       margin=dict(l=5, r=5, t=5, b=5))
     plot_div5 = plot(fig, output_type='div', include_plotlyjs=False)
 
+    fig = go.Figure(data=[go.Table(
+        header=dict(values=['Date', 'Type', 'Movement'],
+                    fill_color='#5a5c5a',
+                    align='left'),
+        cells=dict(values=[wod_analyzer.df_strength.Date_string, wod_analyzer.df_strength.Type,
+                           wod_analyzer.df_strength.Movement],
+                   fill_color='lavender',
+                   align='left'))
+    ])
+    fig.update_layout(title_font_size=30, paper_bgcolor='rgba(200,0,0,0)',
+                      plot_bgcolor='rgba(0,0,0,0)',
+                      margin=dict(l=5, r=5, t=5, b=5))
+    plot_div6 = plot(fig, output_type='div', include_plotlyjs=False)
+
     context_dict = {'plot_div': plot_div1,
                     'plot_div_s': plot_div2,
                     'plot_div_mt': plot_div3,
                     'plot_div_test': plot_div4,
-                    'plot_div_time': plot_div5}
+                    'plot_div_time': plot_div5,
+                    'plot_div_time_strength': plot_div6}
 
     return render(request, template_name, context_dict)
